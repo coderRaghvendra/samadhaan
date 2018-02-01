@@ -17,7 +17,7 @@
 <a href="signUp">sign up</a>
 
 <h1>Sign Up</h1>
-<form action="signUp">
+<form action="signUp" method="post">
     <input type="text" name="email"/>
     <input type="password" name="password"/>
     <input type="submit" value="sign up"/>
