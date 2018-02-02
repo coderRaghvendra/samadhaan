@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: raghvendra.mishra
-  Date: 31/01/18
-  Time: 6:24 PM
+  Date: 02/02/18
+  Time: 12:08 AM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -16,10 +16,10 @@
 <%-- header --%>
 <div>
     <div style="align:left">SAMADHAAN</div>
-    <div style="align:left"><b>Home</b></div>
     <div style="align:left">
-        <a href="document">Document</a>
+        <a href="home">Home</a>
     </div>
+    <div style="align:left"><b>Document</b></div>
     <div style="align:left">
         <a href="signOut">Sign Out</a>
     </div>

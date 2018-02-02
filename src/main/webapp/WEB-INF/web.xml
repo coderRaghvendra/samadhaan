@@ -6,9 +6,9 @@
 	<display-name>Gradle + Spring MVC Hello World + XML</display-name>
 	<description>Spring MVC web application</description>
 
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>
+	<!--<welcome-file-list>-->
+		<!--<welcome-file>index.jsp</welcome-file>-->
+	<!--</welcome-file-list>-->
 
 	<!-- For web context -->
 	<servlet>

@@ -10,6 +10,10 @@ import java.util.List;
  */
 public class UserDataDto {
 
-    User user;
-    List<Document> documentList;
+    private User user;
+    private List<Document> documentList;
+
+    public UserDataDto(User user) {
+        this.user = user;
+    }
 }
