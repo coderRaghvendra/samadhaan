@@ -8,7 +8,7 @@ import com.samadhaan4u.service.response.SignUpResponse;
 /**
  * Created by raghvendra.mishra on 01/02/18.
  */
-public class SignInRequest {
+public class SignInRequest extends AbstractRequest{
 
     private String email;
     private String password;

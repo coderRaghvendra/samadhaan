@@ -8,7 +8,7 @@ import javax.mail.internet.*;
 /**
  * Created by raghvendra.mishra on 02/02/18.
  */
-public class SendMailRequest {
+public class SendMailRequest  extends AbstractRequest{
 
     private static final Logger logger = LoggerFactory.getLogger(SendMailRequest.class);
 

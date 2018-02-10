@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by raghvendra.mishra on 01/02/18.
  */
-public class SignUpResponse {
+public class SignUpResponse extends AbstractResponse{
 
     private String message;
     private User user;

@@ -84,6 +84,6 @@ public class AccountController {
         HttpSession session = request.getSession();
         session.setAttribute("email", null);
         session.invalidate();
-        return "jsp/homepage/emailVerification";
+        return "jsp/homepage/emailVerified";
     }
 }
