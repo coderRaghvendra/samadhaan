@@ -9,27 +9,18 @@ import java.sql.*;
 /**
  * Created by raghvendra.mishra on 01/02/18.
  */
-public class UserDao {
+public class UserDao extends AbstractDao{
 
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
-    public Connection createConnection(){
-
-        Connection con = null;
-        try{
-
-            Class.forName("com.mysql.jdbc.Driver");
-            con=DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/samadhaanDB",
-                    "root","root");
-        }catch(Exception e)
-        {
-            logger.info("Exception ");
-            e.printStackTrace();
-        }
-        return con;
-    }
     public boolean insert(User user){
+
+        if(user.getEmail() == null || user.getPassword() == null){
+
+            logger.info("Either email or password is null.");
+            logger.info("User cannot be added. Returning false.");
+            return false;
+        }
 
         try{
 
@@ -39,18 +30,25 @@ public class UserDao {
             pst.setString(1, user.getEmail());
             pst.setString(2, user.getPassword());
             int nor = pst.executeUpdate();
-            logger.info(nor + " row inserted");
+            logger.info(nor + " row inserted in table user_.");
             con.close();
             return nor > 0;
-        }catch(Exception e){
+        }
+        catch(Exception e){
 
-            logger.info("Exception caught");
+            logger.info("Exception caught while adding user to table user_.");
             e.printStackTrace();
         }
         return false;
     }
 
     public User select(String email, String password){
+
+        if(email == null || password == null){
+
+            logger.info("Either email or password is null.");
+            return null;
+        }
 
         User user = null;
         try{
@@ -62,21 +60,88 @@ public class UserDao {
             pst.setString(2, password);
             ResultSet rst = pst.executeQuery();
             while(rst.next()){
-                user = new User();
-                user.setId(rst.getLong("id"));
-                user.setFname(rst.getString("fname"));
-                user.setLname(rst.getString("lname"));
-                user.setEmail(rst.getString("email"));
-                user.setPassword(rst.getString("password"));
-                user.setPhoneNo(rst.getLong("phoneNo"));
+
+                User.Builder builder = new User.Builder();
+                user = builder.id(rst.getLong("id")).fname(rst.getString("fname"))
+                        .lname(rst.getString("lname")).email(rst.getString("email"))
+                        .password(rst.getString("password")).phoneNo(rst.getLong("phoneNo")).build();
             }
             con.close();
-        }catch(Exception e){
+        }
+        catch(Exception e){
 
-            logger.info("Exception caught");
+            logger.info("Exception caught getting user from db.");
             e.printStackTrace();
         }
         return user;
+    }
+
+    public boolean update(User user){
+
+        if(user == null){
+
+            logger.info("User found null.");
+            return false;
+        }
+
+        try{
+
+            Connection con = createConnection();
+            boolean flag = false;
+            StringBuffer query = new StringBuffer("update user_ set ");
+
+            if(user.getFname() != null){
+                query.append(" fname = ? ");
+                flag = true;
+            }
+
+            if(user.getLname() != null){
+                if(flag) query.append(", ");
+                else flag = true;
+                query.append(" lname = ? ");
+            }
+
+            if(user.getEmail() != null){
+                if(flag) query.append(", ");
+                else flag = true;
+                query.append(" email = ? ");
+            }
+
+            if(user.getPassword() != null){
+                if(flag) query.append(", ");
+                else flag = true;
+                query.append(" password = ? ");
+            }
+
+            if(user.getPhoneNo() != 0){
+                if(flag) query.append(", ");
+                query.append(" phoneNo = ? ");
+            }
+            PreparedStatement pst = con.prepareStatement(query.toString());
+
+            int index = 1;
+            if(user.getFname() != null)
+                pst.setString(index++, user.getFname());
+            if(user.getLname() != null)
+                pst.setString(index++, user.getLname());
+            if(user.getEmail() != null)
+                pst.setString(index++, user.getEmail());
+            if(user.getPassword() != null)
+                pst.setString(index++, user.getPassword());
+            if(user.getPhoneNo() != 0)
+                pst.setLong(index++, user.getPhoneNo());
+
+            int nor = pst.executeUpdate();
+            logger.info(nor + " row updated in table user_.");
+            con.close();
+            return nor > 0;
+        }
+        catch(Exception e){
+
+            logger.info("Exception caught while updating user to table user_.");
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean isEmailExist(String email){
@@ -109,6 +174,26 @@ public class UserDao {
             PreparedStatement pst = con.prepareStatement("update user_ " +
                     "set emailVerified = 1 where emailKey = ?");
             pst.setString(1, emailVerificationKey);
+            int nor = pst.executeUpdate();
+            if(nor > 0)
+                return true;
+        }catch(Exception e){
+
+            logger.info("Exception caught");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateStatus(String email, boolean status){
+
+        try{
+
+            Connection con = createConnection();
+            PreparedStatement pst = con.prepareStatement("update user_ " +
+                    "set status = ? where email = ?");
+            pst.setBoolean(1, status);
+            pst.setString(2, email);
             int nor = pst.executeUpdate();
             if(nor > 0)
                 return true;
