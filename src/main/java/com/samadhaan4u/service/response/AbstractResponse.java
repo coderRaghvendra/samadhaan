@@ -1,66 +1,33 @@
 package com.samadhaan4u.service.response;
 
-import java.util.List;
-
+import com.samadhaan4u.dto.Result;
 /**
  * Created by raghvendra.mishra on 03/02/18.
  */
 public abstract class AbstractResponse implements Response{
-    private boolean success;
-    private String message;
-    private List<ResponseError> errors;
+    protected Result result;
 
-    public AbstractResponse() {}
-
-    public AbstractResponse(boolean success, String message) {
-        this.success = success;
-        this.message = message;
+    protected AbstractResponse(Builder<?, ?> b) {
+        result = b.result;
     }
 
-    public static abstract class Builder<E extends Response>{
-        private boolean success;
-        private String message;
-        private List<ResponseError> errors;
+    public static abstract class Builder<E extends Response, T extends Builder<E, T>> {
+        private Result result;
 
         protected Builder() {}
 
         public abstract E build();
 
+        public abstract T self();
 
-        public void success(boolean success) {
-            this.success = success;
-        }
-
-        public void message(String message) {
-            this.message = message;
-        }
-
-        public void errors(List<ResponseError> errors) {
-            this.errors = errors;
+        public T result(Result result) {
+            this.result = result;
+            return self();
         }
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public List<ResponseError> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(List<ResponseError> errors) {
-        this.errors = errors;
+    @Override
+    public Result getResult() {
+        return result;
     }
 }

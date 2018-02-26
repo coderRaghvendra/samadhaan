@@ -1,40 +1,31 @@
 package com.samadhaan4u.service.response;
 
-import com.samadhaan4u.model.entity.Document;
-import com.samadhaan4u.model.entity.User;
-
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by raghvendra.mishra on 01/02/18.
  */
 public class SignUpResponse extends AbstractResponse{
 
-    private String message;
-    private User user;
-    private List<Document> documentList;
+    private static final Logger logger = LoggerFactory.getLogger(SignUpResponse.class);
 
-    public String getMessage() {
-        return message;
+    public SignUpResponse(Builder builder){
+        super(builder);
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    public static class Builder extends AbstractResponse.Builder<SignUpResponse, Builder>{
 
-    public User getUser() {
-        return user;
-    }
+        public Builder() {
+            super();
+        }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+        @Override
+        public SignUpResponse build(){ return new SignUpResponse(this);}
 
-    public List<Document> getDocumentList() {
-        return documentList;
-    }
-
-    public void setDocumentList(List<Document> documentList) {
-        this.documentList = documentList;
+        @Override
+        public Builder self() {
+            return this;
+        }
     }
 }

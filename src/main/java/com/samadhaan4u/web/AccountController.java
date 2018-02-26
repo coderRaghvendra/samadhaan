@@ -1,11 +1,9 @@
-package com.samadhaan4u.web.account;
+package com.samadhaan4u.web;
 
 import com.samadhaan4u.service.request.SignInRequest;
 import com.samadhaan4u.service.request.SignUpRequest;
 import com.samadhaan4u.service.request.VerifyEmailRequest;
-import com.samadhaan4u.service.response.SignInResponse;
-import com.samadhaan4u.service.response.SignUpResponse;
-import com.samadhaan4u.service.response.VerifyEmailResponse;
+import com.samadhaan4u.service.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -32,8 +30,8 @@ public class AccountController {
             return "jsp/home/home";
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        SignInRequest req = new SignInRequest(email, password);
-        SignInResponse response = req.process();
+        SignInRequest.Builder siBuilder = new SignInRequest.Builder();
+        Response response = siBuilder.email(email).password(password).build().process();
         session.setAttribute("email", email);
         model.addAttribute("response", response);
         return "jsp/home/home";
@@ -49,11 +47,14 @@ public class AccountController {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        SignUpRequest req = new SignUpRequest(email, password);
-        SignUpResponse response = req.process();
-        session.setAttribute("email", email);
+        SignUpRequest.Builder suBuilder = new SignUpRequest.Builder();
+        Response response = suBuilder.email(email).password(password).build().process();
+//        session.setAttribute("email", email);
+        if(response.getResult().isSuccess()){
+            return "jsp/homepage/emailVerification";
+        }
         model.addAttribute("response", response);
-        return "jsp/home/home";
+        return "jsp/homepage/emailVerification";
     }
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
@@ -78,9 +79,9 @@ public class AccountController {
     @RequestMapping(value = "/verifyEmail", method = RequestMethod.GET)
     public String verifyEmail(HttpServletRequest request) {
 
-        String key = request.getParameter("emailKey");
-        VerifyEmailRequest req = new VerifyEmailRequest(key);
-        VerifyEmailResponse response = req.process();
+        String emailKey = request.getParameter("emailKey");
+        VerifyEmailRequest.Builder builder = new VerifyEmailRequest.Builder();
+        Response response = builder.emailKey(emailKey).build().process();
         HttpSession session = request.getSession();
         session.setAttribute("email", null);
         session.invalidate();

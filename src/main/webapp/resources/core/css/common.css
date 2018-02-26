@@ -1,0 +1,24 @@
+html * {
+    -webkit-font-smoothing: antialiased;
+}
+input::placeholder {
+    /*color: bla;*/
+}
+a:focus, textarea:focus, input:focus{
+    outline: none;
+}
+input{
+    border: none;
+}
+.b{
+    border: 1px solid black;
+}
+.bl{
+    border: 1px solid blue;
+}
+.y{
+    border: 5px solid yellow;
+}
+.space{
+    height: 40px;
+}

@@ -11,9 +11,12 @@ public class VerifyEmailResponse extends AbstractResponse{
     private static final Logger logger = LoggerFactory.getLogger(VerifyEmailResponse.class);
     private String email;
 
-    public VerifyEmailResponse(){}
+    protected VerifyEmailResponse(Builder builder) {
+        super(builder);
+        this.email = builder.email;
+    }
 
-    public static class Builder extends AbstractResponse.Builder<VerifyEmailResponse>{
+    public static class Builder extends AbstractResponse.Builder<VerifyEmailResponse, Builder>{
 
         private String email;
 
@@ -26,9 +29,18 @@ public class VerifyEmailResponse extends AbstractResponse{
             return new VerifyEmailResponse(this);
         }
 
+        @Override
+        public Builder self() {
+            return this;
+        }
+
         public Builder email(String email) {
             this.email = email;
             return this;
         }
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

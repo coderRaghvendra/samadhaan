@@ -1,45 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="homepage.css">
-    <link rel="stylesheet" type="text/css" href="normalize.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>www.samadhaan.com</title>
+    <link rel="stylesheet" type="text/css" href="/resources/core/css/document.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
 <body>
+<!--header start-->
+<nav class="navbar navbar-expand-md fixed-top navbar-light"
+     style="padding-bottom: 0px; border-bottom: 1px solid #cc6600;" id="navHeader">
+    <a class="navbar-brand" href="#" style="">
+        Samadhaan
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon" style=""></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <div class="mr-auto"></div>
+        <ul class="navbar-nav" style="">
+            <li class="nav-item" style="border-bottom: 3px solid #cc6600; ">
+                <a class="nav-link" href="#" style="color: #cc6600;">
+                    <img src="/resources/image/application/home-or.png">
+                    Home
+                </a>
+            </li>
+            <li class="nav-item" style="">
+                <a class="nav-link" href="#">
+                    <img src="/resources/image/application/document-bl.png">
+                    Document
+                </a>
+            </li>
+            <li class="nav-item" style="">
+                <a class="nav-link" href="#">
+                    <img src="/resources/image/application/face-bl.png">
+                    Sign Out
+                </a>
+            </li>
+        </ul>
+    </div>
 
-<!--navigation bar start-->
-<div class="nav-bar-large">nav-bar-large</div>
-<div class="nav-bar-start-small">nav-bar-start-small</div>
-<a href="" id="nav-expand-lnk" class="nav-expand-lnk">
-    exp lnk
-</a>
-<div class="nav-bar-expand-small" id="nav-bar-expand-small">
-    nav-bar-expand-small
-</div>
-<!--navigation bar end-->
+</nav>
+<!--header end-->
 
-<!--body view start-->
-<div class="body-view b">
-    <div class="body-seg1 bl">
-        <div class="space"></div>
-        body
+<div style="height: 200px;"></div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div>
+                Documents
+            </div>
+            <div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>File Name</th>
+                        <th>Uploaded Date</th>
+                        <th>Download</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
-<!--body view end-->
-
-<!--footer start-->
-<div class="footer">
-<!--footer end-->
-
-<script>
-
-    $("#nav-expand-lnk").click(function(){
-        $("#nav-bar-expand-small").show();
-    });
-
-</script>
 
 </body>
 </html>

@@ -2,6 +2,8 @@ package com.samadhaan4u.service.response;
 
 import com.samadhaan4u.model.entity.Document;
 import com.samadhaan4u.model.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -10,31 +12,49 @@ import java.util.List;
  */
 public class SignInResponse extends AbstractResponse{
 
-    private String message;
+    private static final Logger logger = LoggerFactory.getLogger(SignInResponse.class);
     private User user;
     private List<Document> documentList;
 
-    public String getMessage() {
-        return message;
+    protected SignInResponse(Builder builder){
+        super(builder);
+        this.user = builder.user;
+        this.documentList = builder.documentList;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public static class Builder extends AbstractResponse.Builder<SignInResponse, Builder>{
+
+        private User user;
+        private List<Document> documentList;
+
+        public Builder() {
+            super();
+        }
+
+        @Override
+        public SignInResponse build(){ return new SignInResponse(this);}
+
+        @Override
+        public Builder self() {
+            return this;
+        }
+
+        public Builder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public Builder documentList(List<Document> documentList) {
+            this.documentList = documentList;
+            return this;
+        }
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public List<Document> getDocumentList() {
         return documentList;
-    }
-
-    public void setDocumentList(List<Document> documentList) {
-        this.documentList = documentList;
     }
 }

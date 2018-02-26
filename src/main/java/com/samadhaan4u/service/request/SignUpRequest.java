@@ -1,41 +1,87 @@
 package com.samadhaan4u.service.request;
 
+import com.samadhaan4u.dto.Result;
+import com.samadhaan4u.dto.constant.ResponseMessage;
+import com.samadhaan4u.model.dao.DaoManager;
 import com.samadhaan4u.model.dao.UserDao;
 import com.samadhaan4u.model.entity.User;
+import com.samadhaan4u.service.response.Response;
 import com.samadhaan4u.service.response.SignUpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by raghvendra.mishra on 01/02/18.
  */
 public class SignUpRequest extends AbstractRequest{
 
+    private static final Logger logger = LoggerFactory.getLogger(SignUpRequest.class);
     private String email;
     private String password;
 
-    public SignUpRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
+    protected SignUpRequest(Builder builder){
+        super(builder);
+        this.email = builder.email;
+        this.password = builder.password;
     }
 
-    public SignUpResponse process(){
+    public static class Builder extends AbstractRequest.Builder<SignUpRequest, Builder>{
 
-        SignUpResponse response = new SignUpResponse();
-        UserDao userDao = new UserDao();
+        private String email;
+        private String password;
+
+        public Builder() {
+            super();
+        }
+
+        @Override
+        public SignUpRequest build(){ return new SignUpRequest(this);}
+
+        @Override
+        public Builder self() {
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+    }
+
+    public Response process(){
+
+        SignUpResponse.Builder srBuilder = new SignUpResponse.Builder();
+        Result.Builder rBuilder = new Result.Builder();
+        Result result;
         //check if email already exist
-        if(userDao.isEmailExist(email)){
-            response.setMessage("Email already exist");
-        }else if(userDao.insert(new User(email,password))){
+        if(DaoManager.userDao().isEmailExist(email)){
+            result = rBuilder.success(false).message(ResponseMessage.USER_ALREADY_REGISTERED.getDescription()).build();
+        }else if(DaoManager.userDao().insert(email, password)){
 
             String link = "localhost:8080/samadhaan-1.0-SNAPSHOT/verifyEmail?";
             String subject = "Email verification from  www.samadhaan.com";
             String mailContent = "please click on this link to verify your email" + link;
             //send verification mail
-            SendMailRequest request = new SendMailRequest("qwertyraghav@gmail.com", "_Raghav@385848",
-                    email, subject, mailContent);
-            response.setMessage("User registered sucessfully");
-            response.setUser(userDao.select(email, password));
+            SendMailRequest.Builder smBuilder = new SendMailRequest.Builder();
+            smBuilder.from("qwertyraghav@gmail.com").password("_Raghav@385848").to(email)
+                    .sub(subject).mailContent(mailContent).build().process();
+            result = rBuilder.success(true).message(ResponseMessage.VERIFY_EMAIL.getDescription()).build();
         }else
-            response.setMessage("Error ocuurred.");
-        return response;
+            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR.getDescription()).build();
+
+        return srBuilder.result(result).build();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

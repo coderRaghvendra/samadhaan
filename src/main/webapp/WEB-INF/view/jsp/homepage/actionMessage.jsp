@@ -11,6 +11,9 @@
     <title>Title</title>
 </head>
 <body>
+
+Your got registered with us. Check your mail and verify to log in.
+
 Congrats !! your email id is verified
 go to homepage and log in
 </body>
