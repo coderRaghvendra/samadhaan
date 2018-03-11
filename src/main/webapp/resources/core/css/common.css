@@ -7,6 +7,10 @@ input::placeholder {
 a:focus, textarea:focus, input:focus{
     outline: none;
 }
+a:hover, a:visited, a:link, a:active
+{
+    text-decoration: none;
+}
 input{
     border: none;
 }
@@ -21,4 +25,10 @@ input{
 }
 .space{
     height: 40px;
+}
+.theme-button{
+    padding: 10px 30px;
+    color: white;
+    background: #cc6600;
+    border-radius: 3px;
 }

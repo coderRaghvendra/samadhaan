@@ -63,9 +63,9 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Username</th>
+                    <th>File Name</th>
+                    <th>Uploaded Date</th>
+                    <th>Download</th>
                 </tr>
                 </thead>
                 <tbody>

@@ -10,6 +10,8 @@ import com.samadhaan4u.service.response.SignUpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
+
 /**
  * Created by raghvendra.mishra on 01/02/18.
  */
@@ -58,21 +60,30 @@ public class SignUpRequest extends AbstractRequest{
         SignUpResponse.Builder srBuilder = new SignUpResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
         Result result;
+        String emailKey = email+ UUID.randomUUID().toString();
         //check if email already exist
         if(DaoManager.userDao().isEmailExist(email)){
-            result = rBuilder.success(false).message(ResponseMessage.USER_ALREADY_REGISTERED.getDescription()).build();
-        }else if(DaoManager.userDao().insert(email, password)){
+            result = rBuilder.success(false).message(ResponseMessage.USER_ALREADY_REGISTERED).build();
+        }else if(DaoManager.userDao().insert(email, password, emailKey)){
 
-            String link = "localhost:8080/samadhaan-1.0-SNAPSHOT/verifyEmail?";
+            String link = "localhost:8080/verifyEmail?emailKey=" + emailKey;
             String subject = "Email verification from  www.samadhaan.com";
-            String mailContent = "please click on this link to verify your email" + link;
+            String mailContent = "<div>please ch click on" +
+                    " this link to verify your email <a href=\"www.google.com\">click</a></div>";
             //send verification mail
             SendMailRequest.Builder smBuilder = new SendMailRequest.Builder();
-            smBuilder.from("qwertyraghav@gmail.com").password("_Raghav@385848").to(email)
-                    .sub(subject).mailContent(mailContent).build().process();
-            result = rBuilder.success(true).message(ResponseMessage.VERIFY_EMAIL.getDescription()).build();
+            Response mailResponse = smBuilder.from("qwertyraghav@gmail.com").password("_Raghav@385848").to(email)
+                    .sub(subject).mailContent(createMailContent(emailKey)).build().process();
+            if(mailResponse.getResult().isSuccess()){
+                logger.info("Verification mail sent successfully.");
+                result = rBuilder.success(true).message(ResponseMessage.VERIFY_EMAIL).build();
+            }
+            else {
+                logger.info("Verification mail could not be sent.");
+                result = rBuilder.success(true).message(ResponseMessage.INTERNAL_ERROR).build();
+            }
         }else
-            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR.getDescription()).build();
+            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
 
         return srBuilder.result(result).build();
     }
@@ -83,5 +94,21 @@ public class SignUpRequest extends AbstractRequest{
 
     public String getPassword() {
         return password;
+    }
+
+    static String createMailContent(String emailKey){
+
+        String messageHtml = "<div style=\"text-align: center\"><div>" +
+                "<div style=\"color : #cc6600\"><h2>Samadhaan</h2></div>" +
+                "<h3>Thanks for registering with us !!</h3>" +
+                "<div><img src=\"https://drive.google.com/file/d/0B1S3zdUEkxMaZ0hmaVhZRkRib2M/view\" style=\"height: " +
+                "500px; width: 500px;\"/></div></div><br/><br/>\n" +
+                "    <div style=\"opacity: 0.8\"><h3>You have registered successfully. " +
+                "Click below to verify your email   id.</h3></div><br/>\n" +
+                "    <div style=\"height: 200px;\"><a href=\"http://localhost:8080/verifyEmail?emailKey=" + emailKey +
+                "\">\n<span style=\"color: white; background: #cc6600; padding: 10px 20px;" +
+                " border-radius: 3px;\">Verify Email</span></a></div>\n" +
+                "</div>";
+        return messageHtml;
     }
 }

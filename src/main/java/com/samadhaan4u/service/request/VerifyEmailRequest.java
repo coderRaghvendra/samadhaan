@@ -47,10 +47,10 @@ public class VerifyEmailRequest extends AbstractRequest{
         Result.Builder rBuilder = new Result.Builder();
         if(DaoManager.userDao().verifyEmail(emailKey)){
             builder.result(rBuilder.success(true)
-                    .message(ResponseMessage.EMAIL_VERIFIED.getDescription()).build());
+                    .message(ResponseMessage.EMAIL_VERIFIED).build());
         }else{
             builder.result(rBuilder.success(false)
-                    .message(ResponseMessage.INTERNAL_ERROR.getDescription()).build());
+                    .message(ResponseMessage.INTERNAL_ERROR).build());
         }
         return builder.build();
     }

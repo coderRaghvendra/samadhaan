@@ -9,16 +9,12 @@ import org.slf4j.LoggerFactory;
 public class VerifyEmailResponse extends AbstractResponse{
 
     private static final Logger logger = LoggerFactory.getLogger(VerifyEmailResponse.class);
-    private String email;
 
     protected VerifyEmailResponse(Builder builder) {
         super(builder);
-        this.email = builder.email;
     }
 
     public static class Builder extends AbstractResponse.Builder<VerifyEmailResponse, Builder>{
-
-        private String email;
 
         public Builder() {
             super();
@@ -33,14 +29,5 @@ public class VerifyEmailResponse extends AbstractResponse{
         public Builder self() {
             return this;
         }
-
-        public Builder email(String email) {
-            this.email = email;
-            return this;
-        }
-    }
-
-    public String getEmail() {
-        return email;
     }
 }

@@ -44,7 +44,7 @@
                 </a>
             </li>
             <li class="nav-item" style="">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/signOut">
                     <img src="/resources/image/application/face-bl.png">
                     Sign Out
                 </a>

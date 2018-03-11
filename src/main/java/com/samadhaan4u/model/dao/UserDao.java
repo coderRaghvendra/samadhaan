@@ -13,13 +13,14 @@ public class UserDao extends AbstractDao{
 
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
-    public boolean insert(String email, String password){
+    public boolean insert(String email, String password, String emailKey){
         try{
             Connection con = createConnection();
             PreparedStatement pst = con.prepareStatement("insert into user_ " +
-                    "(email,password) values(?, ?)");
+                    "(email,password,emailKey) values(?, ?, ?)");
             pst.setString(1, email);
             pst.setString(2, password);
+            pst.setString(3, emailKey);
             int nor = pst.executeUpdate();
             logger.info(nor + " row inserted");
             con.close();

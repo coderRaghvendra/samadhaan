@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Result {
     private boolean success;
-    private String message;
+    private ResponseMessage message;
 
     public Result(Builder builder) {
         this.success = builder.success;
@@ -17,7 +17,7 @@ public class Result {
 
     public static class Builder{
         private boolean success;
-        private String message;
+        private ResponseMessage message;
 
         public Builder() {}
 
@@ -28,7 +28,7 @@ public class Result {
             return this;
         }
 
-        public Builder message(String message) {
+        public Builder message(ResponseMessage message) {
             this.message = message;
             return this;
         }
@@ -38,7 +38,7 @@ public class Result {
         return success;
     }
 
-    public String getMessage() {
+    public ResponseMessage getMessage() {
         return message;
     }
 }

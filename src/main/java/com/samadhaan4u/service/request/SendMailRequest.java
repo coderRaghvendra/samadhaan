@@ -1,5 +1,6 @@
 package com.samadhaan4u.service.request;
 import com.samadhaan4u.dto.Result;
+import com.samadhaan4u.dto.constant.ResponseMessage;
 import com.samadhaan4u.service.response.Response;
 import com.samadhaan4u.service.response.SendMailResponse;
 import org.slf4j.Logger;
@@ -101,12 +102,16 @@ public class SendMailRequest  extends AbstractRequest{
             MimeMessage message = new MimeMessage(session);
             message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
             message.setSubject(sub);
-            message.setText(mailContent);
+//            message.setText(mailContent);
+            message.setContent(mailContent, "text/html; charset=utf-8");
             //send message
             Transport.send(message);
             logger.info("message sent successfully");
-            srBuilder.result(rBuilder.success(true).build());
-        } catch (MessagingException e) {throw new RuntimeException(e);}
+            srBuilder.result(rBuilder.success(true).message(ResponseMessage.MAIL_SENT).build());
+        } catch (MessagingException e) {
+            srBuilder.result(rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build());
+            throw new RuntimeException(e);
+        }
         return srBuilder.build();
     }
 
@@ -130,11 +135,32 @@ public class SendMailRequest  extends AbstractRequest{
         return mailContent;
     }
 
-    //    public static void main(String[] args) {
-//
-//        SendMailRequest req = new SendMailRequest("qwertyraghav@gmail.com", "_Raghav@385848",
-//                "raghvendra.mishra@timesinternet.in", "Test Mail",
-//                "<html><head></head><body><h1>this is sample mail</h1></body></html>");
-//        req.send();
-//    }
+        public static void main(String[] args) {
+
+            String link = "http://localhost:8080/verifyEmail?emailKey=xyz";
+            String subject = "Email verification from  www.samadhaan.com";
+            String mailContent = "<div>please chs click on<h1>hello</h1>" +
+                    " this link to verify your email <a href=\"www.google.com\">click</a></div>";
+            //send verification mail
+            SendMailRequest.Builder smBuilder = new SendMailRequest.Builder();
+            Response mailResponse = smBuilder.from("qwertyraghav@gmail.com").password("_Raghav@385848").to("qwertyraghav@gmail.com")
+                    .sub(subject).mailContent(createMailContent("abc")).build().process();
+            System.out.println(mailResponse.getResult().isSuccess());
+    }
+
+    static String createMailContent(String emailKey){
+
+        String messageHtml = "<div style=\"text-align: center\"><div>" +
+                "<div style=\"color : #cc6600\"><h2>Samadhaan</h2></div>" +
+                "<h3>Thanks for registering with us !!</h3>" +
+                "<div><img src=\"https://drive.google.com/file/d/0B1S3zdUEkxMaZ0hmaVhZRkRib2M/view\" style=\"height: " +
+                "500px; width: 500px;\"/></div></div><br/><br/>\n" +
+                "    <div style=\"opacity: 0.8\"><h3>You have registered successfully. " +
+                "Click below to verify your email   id.</h3></div><br/>\n" +
+                "    <div style=\"height: 200px;\"><a href=\"http://localhost:8080/verifyEmail?emailKey=" + emailKey +
+                "\">\n<span style=\"color: white; background: #cc6600; padding: 10px 20px;" +
+                " border-radius: 3px;\">Verify Email</span></a></div>\n" +
+                "</div>";
+        return messageHtml;
+    }
 }

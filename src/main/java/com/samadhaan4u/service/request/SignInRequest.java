@@ -62,19 +62,19 @@ public class SignInRequest extends AbstractRequest{
         Result result;
         User user = DaoManager.userDao().select(email);
         if(user != null){
-            if(user.getPassword() == password){
+            if(user.getPassword().equals(password)){
                 if(user.isEmailVerified()){
-                    result = rBuilder.success(true).build();
+                    result = rBuilder.success(true).message(ResponseMessage.SIGN_IN_SUCCESS).build();
                     //get documents
                     srBuilder.user(user);
                 }else{
-                    result = rBuilder.success(false).message(ResponseMessage.EMAIL_NOT_VERIFIED.getDescription()).build();
+                    result = rBuilder.success(false).message(ResponseMessage.EMAIL_NOT_VERIFIED).build();
                 }
             } else{
-                result = rBuilder.success(false).message(ResponseMessage.WRONG_PASSWORD.getDescription()).build();
+                result = rBuilder.success(false).message(ResponseMessage.WRONG_PASSWORD).build();
             }
         }else{
-            result = rBuilder.success(false).message(ResponseMessage.EMAIL_NOT_REGISTERED.getDescription()).build();
+            result = rBuilder.success(false).message(ResponseMessage.EMAIL_NOT_REGISTERED).build();
         }
 
         return srBuilder.result(result).build();
