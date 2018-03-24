@@ -1,14 +1,20 @@
-package com.samadhaan4u.model.entity;
+package com.samadhaan4u.service.request;
 
+import com.samadhaan4u.dto.Result;
+import com.samadhaan4u.dto.constant.ResponseMessage;
+import com.samadhaan4u.model.dao.DaoManager;
+import com.samadhaan4u.model.entity.User;
+import com.samadhaan4u.service.response.Response;
+import com.samadhaan4u.service.response.UpdateUserResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by raghvendra.mishra on 01/02/18.
+ * Created by raghvendra.mishra on 23/03/18.
  */
-public class User extends AbstractEntity{
-
-    private static final Logger logger = LoggerFactory.getLogger(User.class);
+public class UpdateUserRequest extends AbstractRequest {
+    private static final Logger logger = LoggerFactory.getLogger(UpdateUserRequest.class);
+    private User user;
     private String fname;
     private String lname;
     private String email;
@@ -18,9 +24,9 @@ public class User extends AbstractEntity{
     private String emailKey;
     private boolean status;
 
-    public User(){ super(); }
+    public UpdateUserRequest() { super(); }
 
-    protected User(Builder builder){
+    protected UpdateUserRequest(Builder builder){
         super(builder);
         this.fname = builder.fname;
         this.lname = builder.lname;
@@ -32,7 +38,7 @@ public class User extends AbstractEntity{
         this.status = builder.status;
     }
 
-    public static class Builder extends AbstractEntity.Builder<User, Builder>{
+    public static class Builder extends AbstractRequest.Builder<UpdateUserRequest, Builder>{
 
         private String fname;
         private String lname;
@@ -48,7 +54,7 @@ public class User extends AbstractEntity{
         }
 
         @Override
-        public User build(){ return new User(this);}
+        public UpdateUserRequest build(){ return new UpdateUserRequest(this);}
 
         @Override
         public Builder self() {
@@ -79,7 +85,6 @@ public class User extends AbstractEntity{
             this.phoneNo = phoneNo;
             return this;
         }
-
         public Builder emailVerified(boolean emailVerified) {
             this.emailVerified = emailVerified;
             return this;
@@ -96,67 +101,29 @@ public class User extends AbstractEntity{
         }
     }
 
-    public String getFname() {
-        return fname;
+    public Response process(){
+        logger.info("in uoload file request, userid = " + this.userId);
+//        UpdateUserResponse.Builder ufBuilder = new UpdateUserResponse.Builder();
+        Result.Builder rBuilder = new Result.Builder();
+        Result result;
+        try{
+            if(DaoManager.userDao().updateUser(this.user)){
+                result = rBuilder.success(true).message(ResponseMessage.FILE_UPLOADED).build();
+            }else{
+                result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
+            }
+        } catch(Exception e){
+            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
+            e.printStackTrace();
+        }return null;
+//        return ufBuilder.result(result).build();
     }
 
-    public String getLname() {
-        return lname;
+    public User getUser() {
+        return user;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public long getPhoneNo() {
-        return phoneNo;
-    }
-
-    public boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public String getEmailKey() {
-        return emailKey;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setFname(String fname) {
-        this.fname = fname;
-    }
-
-    public void setLname(String lname) {
-        this.lname = lname;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setPhoneNo(long phoneNo) {
-        this.phoneNo = phoneNo;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
-    public void setEmailKey(String emailKey) {
-        this.emailKey = emailKey;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

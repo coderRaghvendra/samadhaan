@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -32,19 +33,19 @@
         <div class="mr-auto"></div>
         <ul class="navbar-nav" style="">
             <li class="nav-item" style="padding-right: 10px;">
-                <a class="nav-link" href="/home">
+                <a class="nav-link" href="/home" style="">
                     <img src="/resources/image/application/home-bl.png">
                     Home
                 </a>
             </li>
-            <li class="nav-item" style="padding-right: 10px; border-bottom: 3px solid #cc6600;">
-                <a class="nav-link" href="/document" style="color: #cc6600;">
+            <li class="nav-item" style="padding-right: 10px; color: #cc6600; border-bottom: 3px solid #cc6600;">
+                <a class="nav-link" href="/profile">
                     <img src="/resources/image/application/document-or.png">
-                    Document
+                    Profile
                 </a>
             </li>
             <li class="nav-item" style="">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/signOut">
                     <img src="/resources/image/application/face-bl.png">
                     Sign Out
                 </a>
@@ -55,31 +56,20 @@
 </nav>
 <!--header end-->
 
-<div class="container">
-    <div class="row">
-        <div>Documents</div>
-        <div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>File Name</th>
-                    <th>Uploaded Date</th>
-                    <th>Download</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<form:form method="POST" action="/updateUser" modelAttribute="updateUserRequest">
+    <img src="/resources/image/application/close-envelope.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
+    <form:input path="user.fname" cssClass="input-ovd" placeholder="Email"/><br/><br/>
+    <form:input type="text" path="user.lname" cssClass="input-ovd" placeholder="Email"/><br/><br/>
+    <form:input type="text" path="user.email" cssClass="input-ovd" placeholder="Email"/><br/><br/>
+    <form:input type="password" path="user.password" cssClass="input-ovd" placeholder="Email"/><br/><br/>
+    <form:input type="text" path="user.phoneNo" cssClass="input-ovd" placeholder="Email"/><br/><br/>
+    <form:input type="text" path="user.emailVerified" cssClass="input-ovd" placeholder="Email"/><br/><br/>
+    <form:input type="text" path="user.emailKey" cssClass="input-ovd" placeholder="Email"/><br/><br/>
+    <img src="/resources/image/application/lock.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
+    <form:input type="text" path="user.status" cssClass="input-ovd" placeholder="Password"/><br/><br/>
+    <input type="submit" class="inp-submit" value="UPDATE USER"/>
+</form:form>
+
 
 </body>
 </html>

@@ -66,10 +66,10 @@ public class DocumentDao extends AbstractDao{
         return documentList;
     }
 
-    public static void main(String[] args) {
-        DocumentDao dao = new DocumentDao();
-        List<Document> dlist = dao.select(0);
-
-        System.out.println(dlist.size());
-    }
+//    public static void main(String[] args) {
+//        DocumentDao dao = new DocumentDao();
+//        Document.Builder b = new Document.Builder();
+//        for(int i=1;i<14;i++)
+//           dao.insert(b.name("sampleDoc"+i+".pdf").description("testDoc"+i).userId(41).path("resources").build());
+//    }
 }

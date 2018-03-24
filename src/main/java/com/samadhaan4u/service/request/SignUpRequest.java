@@ -21,6 +21,7 @@ public class SignUpRequest extends AbstractRequest{
     private String email;
     private String password;
 
+    public SignUpRequest(){super();}
     protected SignUpRequest(Builder builder){
         super(builder);
         this.email = builder.email;

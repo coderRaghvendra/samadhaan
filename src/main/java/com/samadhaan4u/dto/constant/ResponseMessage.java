@@ -18,6 +18,9 @@ public enum ResponseMessage{
     EMAIL_VERIFIED(8, "Congrats", "Congrats!! Email is verified. Please log in", "sign-up.png"),
     MAIL_SENT(9, "Mail Sent", "Mail sent successfully", null),
     SIGN_IN_SUCCESS(10, "Sign In Successful", "Sign In Successful", null),
+    FILE_UPLOADED(11, "Sign In Successful", "Sign In Successful", null),
+    NEW_PASSWORD_SENT(12, "Password Sent", "A temporary password has been sent to your mail. " +
+            "Use it to sign in and create your new password", "lock.png")
     ;
 
     private final int code;

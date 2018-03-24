@@ -8,4 +8,8 @@ import com.samadhaan4u.service.response.Response;
 public interface Request {
 
     Response process();
+
+    long getUserId();
+
+    void setUserId(long userId);
 }

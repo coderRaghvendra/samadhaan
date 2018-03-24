@@ -32,3 +32,6 @@ input{
     background: #cc6600;
     border-radius: 3px;
 }
+.hidden{
+    display: none;
+}

@@ -8,4 +8,6 @@ import com.samadhaan4u.dto.Result;
 public interface Response {
 
     Result getResult();
+
+    long getUserId();
 }

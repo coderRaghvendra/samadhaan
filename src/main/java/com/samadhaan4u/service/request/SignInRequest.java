@@ -21,6 +21,8 @@ public class SignInRequest extends AbstractRequest{
     private String email;
     private String password;
 
+    public SignInRequest(){super();}
+
     protected SignInRequest(Builder builder){
         super(builder);
         this.email = builder.email;
@@ -65,8 +67,7 @@ public class SignInRequest extends AbstractRequest{
             if(user.getPassword().equals(password)){
                 if(user.isEmailVerified()){
                     result = rBuilder.success(true).message(ResponseMessage.SIGN_IN_SUCCESS).build();
-                    //get documents
-                    srBuilder.user(user);
+                    srBuilder.user(user).documentList(DaoManager.documentDao().select(user.getId()));
                 }else{
                     result = rBuilder.success(false).message(ResponseMessage.EMAIL_NOT_VERIFIED).build();
                 }
@@ -77,7 +78,7 @@ public class SignInRequest extends AbstractRequest{
             result = rBuilder.success(false).message(ResponseMessage.EMAIL_NOT_REGISTERED).build();
         }
 
-        return srBuilder.result(result).build();
+        return srBuilder.userId(user.getId()).result(result).build();
     }
 
     public String getEmail() {
@@ -86,5 +87,13 @@ public class SignInRequest extends AbstractRequest{
 
     public String getPassword() {
         return password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

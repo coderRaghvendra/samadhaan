@@ -1,6 +1,8 @@
 package com.samadhaan4u.web;
 
 import com.samadhaan4u.dto.ServiceType;
+import com.samadhaan4u.service.request.*;
+import com.samadhaan4u.service.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,31 +20,40 @@ public class ResourceController {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String homepage(HttpServletRequest request, Model model) {
-
-        HttpSession session = request.getSession();
-        logger.info("session value" +  session.getAttribute("email"));
-        if(session.getAttribute("email") != null)
-            return "jsp/home/home";
-        model.addAttribute("serviceArray", ServiceType.values());
-        return "jsp/homepage/homepage";
-    }
-
-    @RequestMapping(value = "/document", method = RequestMethod.GET)
-    public String document(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        if(session.getAttribute("email") == null)
-            return "jsp/homepage/homepage";
-        return "jsp/home/document";
-    }
-
-    @RequestMapping(value = "/home", method = RequestMethod.GET)
-    public String home(HttpServletRequest request) {
-
-        HttpSession session = request.getSession();
-        if(session.getAttribute("email") == null)
-            return "jsp/homepage/homepage";
+    @RequestMapping(value = "/", method = {RequestMethod.GET, RequestMethod.POST})
+    public String home(HttpSession session, Model model) {
+        if(session.getAttribute("userId") == null)
+            return "forward:/homepage";
+        logger.info("user id in resource controller = " +  session.getAttribute("userId"));
+        long userId = (long)session.getAttribute("userId");
+        UserDocumentRequest.Builder udrBuilder = new UserDocumentRequest.Builder();
+        Response response = udrBuilder.userId(userId).build().process();
+        model.addAttribute("responseDto", response);
+        model.addAttribute("uploadFileRequest", new UploadFileRequest());
+        logger.info("response dto = " + response.getResult().getMessage());
         return "jsp/home/home";
+    }
+
+    @RequestMapping(value = "/profile", method = {RequestMethod.GET, RequestMethod.POST})
+    public String profile(HttpSession session, Model model) {
+        if(session.getAttribute("userId") == null)
+            return "forward:/homepage";
+        long userId = (Long)session.getAttribute("userId");
+        UserProfileRequest.Builder udrBuilder = new UserProfileRequest.Builder();
+        Response response = udrBuilder.userId(userId).build().process();
+        model.addAttribute("responseDto", response);
+        model.addAttribute("updateUserRequest", new UpdateUserRequest());
+        logger.info("response dto = " + response.getResult().getMessage());
+        return "jsp/home/profile";
+    }
+
+    @RequestMapping(value = "/homepage", method = {RequestMethod.GET, RequestMethod.POST})
+    public String homepage(HttpSession session, Model model) {
+        if(session.getAttribute("userId") != null)
+            return "forward:/";
+        model.addAttribute("signInRequest", new SignInRequest());
+        model.addAttribute("signUpRequest", new SignUpRequest());
+        model.addAttribute("forgotPasswordRequest", new ForgotPasswordRequest());
+        return "jsp/homepage/homepage";
     }
 }

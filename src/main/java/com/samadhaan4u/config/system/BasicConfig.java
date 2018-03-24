@@ -2,6 +2,7 @@ package com.samadhaan4u.config.system;
 
 import com.samadhaan4u.config.ConfigResources;
 
+import java.io.FileReader;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -17,14 +18,13 @@ public abstract class BasicConfig {
     private static String mailServerPassword;
 
     public static synchronized boolean initialize() {
-        try (InputStream is = ConfigResources.getBasicPropertiesFileName()) {
-//            try (InputStream is = SystemConfig.class.getClassLoader().getResourceAsStream(
-//                    ConfigResources.getBasicPropertiesFileName())) {
-            Properties prop = new Properties();
-            prop.load(is);
-            resourcesBasePath = prop.getProperty(PROP_RESOURCES_BASE_PATH).trim();
-            templateBasePath = prop.getProperty(PROP_TEMPLATE_BASE_PATH).trim();
-            seeddataBasePath = prop.getProperty(PROP_SEEDDATA_BASE_PATH).trim();
+        try{
+            FileReader fileReader = new FileReader(ConfigResources.getBasicPropertiesFileName());
+            Properties properties = new Properties();
+            properties.load(fileReader);
+            serverName = properties.getProperty(SERVER_NAME).trim();
+            adminMail = properties.getProperty(ADMIN_MAIL).trim();
+            mailServerPassword = properties.getProperty(MAIL_SERVER_PASSWORD).trim();
             return true;
         } catch (Exception e) {
             throw new RuntimeException("Error initializing Base Config", e);

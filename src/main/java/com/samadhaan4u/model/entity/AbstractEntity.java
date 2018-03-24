@@ -7,6 +7,8 @@ public class AbstractEntity implements Entity{
 
     protected long id;
 
+    public AbstractEntity () {}
+
     protected AbstractEntity(Builder<?, ?> b) {
         this.id = b.id;
     }

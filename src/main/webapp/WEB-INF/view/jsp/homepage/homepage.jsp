@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -31,13 +32,13 @@
                           style="height: 50px; width: 50px;"/>
                 </div><br/>
                 <div style="opacity: 0.8;"><h3>Sign Up</h3></div><br/>
-                <form action="signUp" method="post">
+                <form:form method="POST" action="/signUp" modelAttribute="signUpRequest">
                     <img src="/resources/image/application/close-envelope.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
-                    <input type="text" name="email" placeholder="Email" class="input-ovd"/><br/><br/>
+                    <form:input type="text" path="email" cssClass="input-ovd" placeholder="Email"/><br/><br/>
                     <img src="/resources/image/application/lock.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
-                    <input type="password" name="password" placeholder="Password" class="input-ovd"/><br/><br/>
+                    <form:input type="password" path="password" cssClass="input-ovd" placeholder="Password"/><br/><br/>
                     <input type="submit" class="inp-submit" value="GET STARTED"/>
-                </form>
+                </form:form>
                 <div style="font-size: 13px; padding-top: 20px;">
                     <span style="opacity: 0.6;">Already have an account. Click here to</span>
                     <a href="" style="color: #cc6600; opacity: 0.9;"> SIGN IN </a>
@@ -59,17 +60,26 @@
                           style="height: 50px; width: 50px;"/>
                 </div><br/>
                 <div style="opacity: 0.8;"><h3>Welcome Back !!</h3></div><br/>
-                <form action="signIn" method="post">
+                <form:form method="POST" action="/signIn" modelAttribute="signInRequest">
                     <img src="/resources/image/application/close-envelope.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
-                    <input type="text" name="email" placeholder="Email" class="input-ovd"/><br/><br/>
+                    <form:input type="text" path="email" cssClass="input-ovd" placeholder="Email"/><br/><br/>
                     <img src="/resources/image/application/lock.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
-                    <input type="password" name="password" placeholder="Password" class="input-ovd"/><br/><br/>
+                    <form:input type="password" path="password" cssClass="input-ovd" placeholder="Password"/><br/><br/>
                     <input type="submit" class="inp-submit" value="SIGN IN"/>
-                </form>
+                </form:form>
                 <div style="font-size: 13px; padding-top: 20px;">
-                    <a href="" style="font-size: 13px;" class="">
+                    <a href="javascript:()" style="font-size: 13px;" class="" id="forgotPasswordLink">
                         Forgot your password?
                     </a><br/>
+                    <%--forgot password form--%>
+                    <div id="forgotPasswordForm" class="hidden">
+                        <form:form method="POST" action="/forgotPassword" modelAttribute="forgotPasswordRequest">
+                            Enter your email address, we will send temporary password<br/>
+                            <img src="/resources/image/application/lock.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
+                            <form:input path="email" cssClass="input-ovd" placeholder="Email"/><br/><br/>
+                            <input type="submit" class="inp-submit" value="SEND PASSWORD"/>
+                        </form:form><br/><br/>
+                    </div>
                     <span style="opacity: 0.6;">Do not have an account. Click here to</span>
                     <a href="" style="color: #cc6600; opacity: 0.9;"> SIGN UP </a>
                     <span style="opacity: 0.6;">!!</span>
@@ -265,6 +275,10 @@
             } else {
                 $("#navHeader").css('background', 'transparent');
             }
+        });
+
+        $("#forgotPasswordLink").click(function(){
+            $("#forgotPasswordForm").toggle();
         });
     });
 </script>
