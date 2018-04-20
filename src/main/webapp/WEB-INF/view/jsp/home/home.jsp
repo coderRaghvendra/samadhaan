@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>www.samadhaan.com</title>
-    <link rel="stylesheet" type="text/css" href="/resources/core/css/document.css">
+    <link rel="stylesheet" type="text/css" href="/resources/core/css/home.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -22,7 +22,8 @@
 <body>
 <!--header start-->
 <nav class="navbar navbar-expand-md fixed-top navbar-light"
-     style="padding-bottom: 0px; border-bottom: 1px solid #cc6600;" id="navHeader">
+     style="padding-bottom: 0px; border-bottom: 1px solid #cc6600; background: white;
+     box-shadow: 0px 0px 10px #bfbfbf;" id="navHeader">
     <a class="navbar-brand" href="#" style="">
         Samadhaan
     </a>
@@ -32,8 +33,20 @@
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <div class="mr-auto"></div>
         <ul class="navbar-nav" style="">
-            <li class="nav-item" style="padding-right: 10px; color: #cc6600; border-bottom: 3px solid #cc6600;">
-                <a class="nav-link" href="/home">
+            <c:if test="${responseDto.user.type == 'ADMIN'}">
+                <li class="nav-item" style="padding-right: 10px;">
+                    <a class="nav-link" href="/viewUsers" style="font-size: 14px; text-decoration: underline;">
+                        view users
+                    </a>
+                </li>
+                <li class="nav-item" style="padding-right: 10px;">
+                    <a class="nav-link" href="/search" style="font-size: 14px; text-decoration: underline;">
+                        search
+                    </a>
+                </li>
+            </c:if>
+            <li class="nav-item" style="padding-right: 10px; border-bottom: 3px solid #cc6600;">
+                <a class="nav-link" href="/" style="color: #cc6600;">
                     <img src="/resources/image/application/home-or.png">
                     Home
                 </a>
@@ -55,50 +68,64 @@
 
 </nav>
 <!--header end-->
-<div style="height: 200px;"></div>
+<div style="height: 100px;"></div>
 <div class="container">
     <div class="row">
-        <div>Documents</div>
-        <div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>File Name</th>
-                    <th>Uploaded Date</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:set var="count" value="1" scope="page" />
-                <c:forEach items="${responseDto.documentList}" var="document">
-                    <tr>
-                        <th scope="row">${count}</th>
-                        <td>${document.name}</td>
-                        <td>${document.uploadDate}</td>
-                        <td>${document.description}</td>
-                    </tr>
-                    <c:set var="count" value="${count + 1}" scope="page"/>
-                </c:forEach>
-                </tbody>
-            </table>
-        </div>
-        <div>
-            <div>New File Upload</div>
+        <div class="col-sm-12 col-md-8 col-lg 8">
             <div>
-                <%--<form method="POST" action="uploadFile" enctype="multipart/form-data" >--%>
-                <%--File: <input type="file" name="file" id="file" /><br/>--%>
-                <%--Destination: <input type="text" value="/tmp" name="destination"/></br>--%>
-                <%--<input type="submit" value="Upload" name="upload" id="upload" />--%>
-                <%--</form>--%>
-                <form:form method="POST" action="/uploadFile" modelAttribute="uploadFileRequest"
-                    enctype="multipart/form-data">
-                    <form:input type="file" path="file" id="file" class="form-control input-sm"/>
-                    <form:input type="hidden" path="userId" id="userId" class="form-control input-sm"
-                                value="${responseDto.userId}"/>
-                    <input type="submit" class="inp-submit" value="UPLOAD FILE"/>
-                </form:form>
+                <div>
+                    <h2>Hi ${responseDto.user.fname} !!</h2>
+                </div>
+                <h3> Welcome to <span style="color: #cc6600;">samadhaan</span></h3>
             </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            <div style="text-align: right;">
+                <div>Upload new file</div>
+                <div>
+                    <form:form method="POST" action="/uploadFile" modelAttribute="uploadFileRequest"
+                               enctype="multipart/form-data">
+                        <form:input type="file" path="file" id="file" class="form-control input-sm"/>
+                        <form:input type="hidden" path="userId" id="userId" class="form-control input-sm"
+                                    value="${responseDto.userId}"/>
+                        <input type="submit" class="inp-submit" value="UPLOAD"/>
+                    </form:form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div>Documents</div>
+            <div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>File Name</th>
+                        <th>Uploaded Date</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:set var="count" value="1" scope="page" />
+                    <c:forEach items="${responseDto.documentList}" var="document">
+                        <tr>
+                            <th scope="row">${count}</th>
+                            <td>${document.name}</td>
+                            <td>${document.uploadDate}</td>
+                            <td>${document.description}</td>
+                        </tr>
+                        <c:set var="count" value="${count + 1}" scope="page"/>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div style="height: 200px;"></div>
         </div>
     </div>
 </div>

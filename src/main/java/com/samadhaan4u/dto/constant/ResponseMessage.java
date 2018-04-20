@@ -20,7 +20,8 @@ public enum ResponseMessage{
     SIGN_IN_SUCCESS(10, "Sign In Successful", "Sign In Successful", null),
     FILE_UPLOADED(11, "Sign In Successful", "Sign In Successful", null),
     NEW_PASSWORD_SENT(12, "Password Sent", "A temporary password has been sent to your mail. " +
-            "Use it to sign in and create your new password", "lock.png")
+            "Use it to sign in and create your new password", "lock.png"),
+    USER_UPDATED(13, "User Updated", "Your changes have been saved", "")
     ;
 
     private final int code;

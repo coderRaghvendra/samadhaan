@@ -15,16 +15,12 @@ import org.slf4j.LoggerFactory;
  */
 public class UserProfileRequest extends AbstractRequest {
     private static final Logger logger = LoggerFactory.getLogger(UserProfileRequest.class);
-    private long userId;
 
     protected UserProfileRequest(UserProfileRequest.Builder builder){
         super(builder);
-        this.userId = builder.userId;
     }
 
     public static class Builder extends AbstractRequest.Builder<UserProfileRequest, UserProfileRequest.Builder>{
-
-        private long userId;
 
         public Builder() {
             super();
@@ -37,11 +33,6 @@ public class UserProfileRequest extends AbstractRequest {
         public UserProfileRequest.Builder self() {
             return this;
         }
-
-        public UserProfileRequest.Builder userId(long userId) {
-            this.userId = userId;
-            return this;
-        }
     }
 
     @Override
@@ -50,7 +41,7 @@ public class UserProfileRequest extends AbstractRequest {
         UserProfileResponse.Builder uprBuilder = new UserProfileResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
         Result result;
-        User user = DaoManager.userDao().select(userId);
+        User user = DaoManager.userDao().select(this.userId);
         if(user != null){
             result = rBuilder.success(true).build();
             uprBuilder.user(user);

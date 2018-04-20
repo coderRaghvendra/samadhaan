@@ -4,31 +4,33 @@ import com.samadhaan4u.dto.Result;
 import com.samadhaan4u.dto.constant.ResponseMessage;
 import com.samadhaan4u.model.dao.DaoManager;
 import com.samadhaan4u.model.entity.User;
+import com.samadhaan4u.service.response.GetUsersResponse;
 import com.samadhaan4u.service.response.Response;
-import com.samadhaan4u.service.response.UserDocumentResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
- * Created by raghvendra.mishra on 15/03/18.
+ * Created by raghvendra.mishra on 02/04/18.
  */
-public class UserDocumentRequest extends AbstractRequest{
-    private static final Logger logger = LoggerFactory.getLogger(UserDocumentRequest.class);
+public class GetUsersRequest extends AbstractRequest {
+    private static final Logger logger = LoggerFactory.getLogger(GetUsersRequest.class);
 
-    public UserDocumentRequest() { super(); }
+    public GetUsersRequest() { super(); }
 
-    protected UserDocumentRequest(Builder builder){
+    protected GetUsersRequest(Builder builder){
         super(builder);
     }
 
-    public static class Builder extends AbstractRequest.Builder<UserDocumentRequest, Builder>{
+    public static class Builder extends AbstractRequest.Builder<GetUsersRequest, Builder>{
 
         public Builder() {
             super();
         }
 
         @Override
-        public UserDocumentRequest build(){ return new UserDocumentRequest(this);}
+        public GetUsersRequest build(){ return new GetUsersRequest(this);}
 
         @Override
         public Builder self() {
@@ -38,13 +40,13 @@ public class UserDocumentRequest extends AbstractRequest{
 
     public Response process(){
         logger.info("in udrProcess : userId = "  + this.userId);
-        UserDocumentResponse.Builder udrBuilder = new UserDocumentResponse.Builder();
+        GetUsersResponse.Builder udrBuilder = new GetUsersResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
         Result result;
-        User user = DaoManager.userDao().select(this.userId);
-        if(user != null){
+        List<User> userList = DaoManager.userDao().selectMultiple();
+        if(userList != null){
             result = rBuilder.success(true).build();
-            udrBuilder.user(user).documentList(DaoManager.documentDao().select(this.userId));
+            udrBuilder.userList(userList);
         }else{
             result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
         }

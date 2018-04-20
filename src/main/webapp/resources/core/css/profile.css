@@ -1,0 +1,101 @@
+@import "common.css";
+.bg-img{
+    background-size: 100%;
+    background-image: url("/resources/image/application/wlp_fin2.jpg");
+}
+.bg{
+    background: rgba(0,0,0,0.7);
+}
+.brand{
+    height: 700px;
+    text-align: center;
+}
+.about{
+    /*height: 500px;*/
+    padding: 50px 10%;
+    /*background: rgba(100,100,100,1);*/
+}
+.service{
+    padding: 40px 10%;
+    background: rgba(0,0,0,0.7);
+}
+.serv-head{
+    color: white;
+    opacity: 0.8;
+}
+.contact-bg{
+    background-image: url("/resources/image/application/conact-bg.jpg");
+}
+.footer{
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding-top: 50px;
+}
+.submit-btn{
+    background: transparent;
+    border: none;
+    color: white;
+}
+.input-ovd{
+    background: transparent;
+    border-bottom: 1px solid #666666;
+    opacity: 0.8;
+    padding: 3px 5px;
+    width: 200px;
+}
+.input-contact-ovd{
+    background: transparent;
+    border-bottom: 1px solid #666666;
+    opacity: 0.8;
+    padding: 3px 5px;
+    /*width: 200px;*/
+    color: white;
+}
+.inp-submit{
+    color: #cc6600;
+    border-radius: 3px;
+    padding: 5px 30px;
+}
+.inp-contact-submit{
+    color: #cc6600;
+    border-radius: 3px;
+    padding: 5px 30px;
+}
+.theme-color{
+    color: #cc6600;
+}
+.pad-0{
+    padding: 0px;
+    margin: 0px;
+}
+.pad-5px{
+    padding: 5px;
+}
+.serv-card{
+    background-color: white;
+    border-radius: 3px;
+    /*padding: 10px;*/
+    /*height: 160px;*/
+    text-align: center;
+    box-shadow: 4px 4px 4px rgba(0,0,0,.1);
+}
+.contact{
+    padding: 5px 5%;
+    opacity : 0.8;
+    font-family: Comic Sans MS;
+}
+.img-16{
+    height: 16px;
+    width: 16px;
+}
+.serv-head{
+    color: white;
+    opacity: 0.8;
+}
+.sm-img{
+    height: 15px;
+    width: 15px;
+}
+.low-opac{
+    opacity: 0.8;
+}

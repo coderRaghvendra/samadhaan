@@ -1,5 +1,6 @@
 package com.samadhaan4u.web;
 
+import com.samadhaan4u.service.request.UpdatePasswordRequest;
 import com.samadhaan4u.service.request.UpdateUserRequest;
 import com.samadhaan4u.service.response.Response;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by raghvendra.mishra on 31/01/18.
@@ -23,23 +25,31 @@ public class ProfileController {
 
     @RequestMapping(value="/updateUser", method = RequestMethod.POST)
     public String updateUser(@ModelAttribute("updateUserRequest")UpdateUserRequest request, BindingResult result,
-                             Model model) {
+                             HttpSession session) {
+        if(session.getAttribute("userId") == null)
+            return "forward:/homepage";
         if (result.hasErrors()) {
             System.out.println("validation errors");
             return "forward:/";
         } else {
-
-            if(request == null)
-                logger.info("update use request is null");
-            else{
-                if(request.getUser() == null)
-                    logger.info("update user request user is null");
-                else
-                    logger.info("update user request not nill, fname = " + request.getUser().getFname());
-            }
+            request.setUserId((long)session.getAttribute("userId"));
             Response response = request.process();
-            model.addAttribute("responseDto", response);
+            return "forward:/profile";
+        }
+    }
+
+    @RequestMapping(value="/updatePassword", method = RequestMethod.POST)
+    public String updatePassword(@ModelAttribute("updatePasswordRequest")UpdatePasswordRequest request, BindingResult result,
+                                 HttpSession session) {
+        if(session.getAttribute("userId") == null)
+            return "forward:/homepage";
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
             return "forward:/";
+        } else {
+            request.setUserId((long)session.getAttribute("userId"));
+            Response response = request.process();
+            return "forward:/profile";
         }
     }
 }

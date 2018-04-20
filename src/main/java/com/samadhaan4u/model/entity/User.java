@@ -1,7 +1,10 @@
 package com.samadhaan4u.model.entity;
 
+import com.samadhaan4u.dto.constant.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Timestamp;
 
 /**
  * Created by raghvendra.mishra on 01/02/18.
@@ -17,6 +20,8 @@ public class User extends AbstractEntity{
     private boolean emailVerified;
     private String emailKey;
     private boolean status;
+    private UserType type;
+    private Timestamp creationTime;
 
     public User(){ super(); }
 
@@ -30,6 +35,8 @@ public class User extends AbstractEntity{
         this.emailVerified = builder.emailVerified;
         this.emailKey = builder.emailKey;
         this.status = builder.status;
+        this.type = builder.type;
+        this.creationTime = builder.creationTime;
     }
 
     public static class Builder extends AbstractEntity.Builder<User, Builder>{
@@ -42,6 +49,8 @@ public class User extends AbstractEntity{
         private boolean emailVerified;
         private String emailKey;
         private boolean status;
+        private UserType type;
+        private Timestamp creationTime;
 
         public Builder() {
             super();
@@ -94,6 +103,16 @@ public class User extends AbstractEntity{
             this.status = status;
             return this;
         }
+
+        public Builder type(UserType type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder creationTime(Timestamp creationTime) {
+            this.creationTime = creationTime;
+            return this;
+        }
     }
 
     public String getFname() {
@@ -144,9 +163,7 @@ public class User extends AbstractEntity{
         this.password = password;
     }
 
-    public void setPhoneNo(long phoneNo) {
-        this.phoneNo = phoneNo;
-    }
+    public void setPhoneNo(long phoneNo) { this.phoneNo = phoneNo; }
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
@@ -158,5 +175,21 @@ public class User extends AbstractEntity{
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
+    }
+
+    public Timestamp getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Timestamp creationTime) {
+        this.creationTime = creationTime;
     }
 }

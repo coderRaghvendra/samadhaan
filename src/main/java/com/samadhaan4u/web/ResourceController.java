@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -43,6 +45,7 @@ public class ResourceController {
         Response response = udrBuilder.userId(userId).build().process();
         model.addAttribute("responseDto", response);
         model.addAttribute("updateUserRequest", new UpdateUserRequest());
+        model.addAttribute("updatePasswordRequest", new UpdatePasswordRequest());
         logger.info("response dto = " + response.getResult().getMessage());
         return "jsp/home/profile";
     }
@@ -55,5 +58,37 @@ public class ResourceController {
         model.addAttribute("signUpRequest", new SignUpRequest());
         model.addAttribute("forgotPasswordRequest", new ForgotPasswordRequest());
         return "jsp/homepage/homepage";
+    }
+
+    @RequestMapping(value = "/getUserData", method = {RequestMethod.POST})
+    public String getUserData(@ModelAttribute("userDocumentRequest")UserDocumentRequest request,
+                              BindingResult result, HttpSession session, Model model) {
+        if(session.getAttribute("userId") == null)
+            return "forward:/homepage";
+        long userId = request.getUserId();
+        UserDocumentRequest.Builder udrBuilder = new UserDocumentRequest.Builder();
+        Response response = udrBuilder.userId(userId).build().process();
+        model.addAttribute("responseDto", response);
+        model.addAttribute("userDocumentRequest", new UserDocumentRequest());
+        logger.info("response dto = " + response.getResult().getMessage());
+        return "jsp/home/search";
+    }
+
+    @RequestMapping(value = "/viewUsers", method = {RequestMethod.GET})
+    public String viewUsers(HttpSession session, Model model){
+        if(session.getAttribute("userId") == null)
+            return "forward:/homepage";
+        GetUsersRequest.Builder gurBuilder = new GetUsersRequest.Builder();
+        Response response = gurBuilder.build().process();
+        model.addAttribute("responseDto", response);
+        return "jsp/home/viewUsers";
+    }
+
+    @RequestMapping(value = "/search", method = {RequestMethod.GET})
+    public String search(HttpSession session, Model model){
+        if(session.getAttribute("userId") == null)
+            return "forward:/homepage";
+        model.addAttribute("userDocumentRequest", new UserDocumentRequest());
+        return "jsp/home/search";
     }
 }
