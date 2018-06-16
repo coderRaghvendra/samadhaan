@@ -89,7 +89,7 @@
                     </div>
                     <div class="col-sm-12 col-md-8 col-lg-8">
                         <div>
-                            qwertyraghav@gmail.com
+                            ${user.email}
                         </div>
                     </div>
                 </div>

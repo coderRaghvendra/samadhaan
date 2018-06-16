@@ -1,33 +1,33 @@
-package com.samadhaan4u.model.entity;
+package com.samadhaan4u.dto;
 
+import com.samadhaan4u.model.entity.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by raghvendra.mishra on 01/02/18.
+ * Created by raghvendra.mishra on 19/05/18.
  */
-public class Document  extends AbstractEntity{
-
-    private static final Logger logger = LoggerFactory.getLogger(Document.class);
+public class DocumentDto {
+    private static final Logger logger = LoggerFactory.getLogger(DocumentDto.class);
+    private long id;
     private String name;
-    private long userId;
     private Timestamp uploadDate;
     private String description;
 
-    protected Document(Builder builder){
-        super(builder);
+    protected DocumentDto(Builder builder){
+        this.id = builder.id;
         this.name = builder.name;
-        this.userId = builder.userId;
         this.uploadDate = builder.uploadDate;
         this.description = builder.description;
     }
 
-    public static class Builder extends AbstractEntity.Builder<Document, Builder>{
-
+    public static class Builder{
+        private long id;
         private String name;
-        private long userId;
         private Timestamp uploadDate;
         private String description;
 
@@ -35,21 +35,21 @@ public class Document  extends AbstractEntity{
             super();
         }
 
-        @Override
-        public Document build(){ return new Document(this);}
+        public Builder(Document document) {
+            super();
+            id(document.getId()).name(document.getName()).uploadDate(document.getUploadDate())
+                    .description(document.getDescription());
+        }
 
-        @Override
-        public Builder self() {
+        public DocumentDto build(){ return new DocumentDto(this);}
+
+        public Builder id(long id) {
+            this.id = id;
             return this;
         }
 
         public Builder name(String name) {
             this.name = name;
-            return this;
-        }
-
-        public Builder userId(long userId) {
-            this.userId = userId;
             return this;
         }
 
@@ -64,12 +64,12 @@ public class Document  extends AbstractEntity{
         }
     }
 
-    public String getName() {
-        return name;
+    public long getId() {
+        return id;
     }
 
-    public long getUserId() {
-        return userId;
+    public String getName() {
+        return name;
     }
 
     public Timestamp getUploadDate() {

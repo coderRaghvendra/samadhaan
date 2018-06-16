@@ -1,4 +1,5 @@
 package com.samadhaan4u.service.request;
+
 import com.samadhaan4u.dto.Result;
 import com.samadhaan4u.dto.constant.ResponseMessage;
 import com.samadhaan4u.service.response.Response;
@@ -13,9 +14,7 @@ import javax.mail.internet.*;
  * Created by raghvendra.mishra on 02/02/18.
  */
 public class SendMailRequest  extends AbstractRequest{
-
     private static final Logger logger = LoggerFactory.getLogger(SendMailRequest.class);
-
     private String from;
     private String password;
     private String to;
@@ -32,7 +31,6 @@ public class SendMailRequest  extends AbstractRequest{
     }
 
     public static class Builder extends AbstractRequest.Builder<SendMailRequest, Builder>{
-
         private String from;
         private String password;
         private String to;
@@ -41,6 +39,11 @@ public class SendMailRequest  extends AbstractRequest{
 
         public Builder() {
             super();
+        }
+
+        public Builder(String to, String sub, String mailContent) {
+            super();
+            from("qwertyraghav@gmail.com").password("_Raghav@385848").to(to).sub(sub).mailContent(mailContent);
         }
 
         @Override
@@ -53,34 +56,33 @@ public class SendMailRequest  extends AbstractRequest{
 
         public Builder from(String from) {
             this.from = from;
-            return this;
+            return self();
         }
 
         public Builder password(String password) {
             this.password = password;
-            return this;
+            return self();
         }
 
         public Builder to(String to) {
             this.to = to;
-            return this;
+            return self();
         }
 
         public Builder sub(String sub) {
             this.sub = sub;
-            return this;
+            return self();
         }
 
         public Builder mailContent(String mailContent) {
             this.mailContent = mailContent;
-            return this;
+            return self();
         }
     }
 
     public Response process(){
         SendMailResponse.Builder srBuilder = new SendMailResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
-        Result result;
         //Get properties object
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -107,12 +109,12 @@ public class SendMailRequest  extends AbstractRequest{
             //send message
             Transport.send(message);
             logger.info("message sent successfully");
-            srBuilder.result(rBuilder.success(true).message(ResponseMessage.MAIL_SENT).build());
+            rBuilder.success(true).message(ResponseMessage.MAIL_SENT).build();
         } catch (MessagingException e) {
-            srBuilder.result(rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build());
+            rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
             throw new RuntimeException(e);
         }
-        return srBuilder.build();
+        return srBuilder.result(rBuilder.build()).build();
     }
 
     public String getFrom() {

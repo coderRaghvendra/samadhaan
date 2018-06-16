@@ -1,5 +1,7 @@
 package com.samadhaan4u.web;
 
+import com.samadhaan4u.service.request.DeleteFileRequest;
+import com.samadhaan4u.service.request.DownloadFileRequest;
 import com.samadhaan4u.service.request.UploadFileRequest;
 import com.samadhaan4u.service.response.Response;
 import org.slf4j.Logger;
@@ -21,20 +23,47 @@ import javax.servlet.http.HttpSession;
  * Created by raghvendra.mishra on 31/01/18.
  */
 @Controller
-public class DocumentController {
+public class DocumentController extends AbstractController{
     private static final Logger logger = LoggerFactory.getLogger(DocumentController.class);
 
     @RequestMapping(value="/uploadFile", method = RequestMethod.POST)
-    public String uploadFile(@ModelAttribute("uploadFileRequest")UploadFileRequest request, BindingResult result,
-                             Model model) {
+    public String uploadFile(@ModelAttribute(UPLOAD_FILE_REQUEST)UploadFileRequest request, BindingResult result,
+                             Model model, HttpSession session) {
+        if(!isUserLoggedIn(session)) {
+            return FORWARD_HOMEPAGE;
+        }
         if (result.hasErrors()) {
             System.out.println("validation errors");
-            return "forward:/";
         } else {
-
             Response response = request.process();
-            model.addAttribute("responseDto", response);
-            return "forward:/";
+            model.addAttribute("response", response);
         }
+        return FORWARD_HOME;
+    }
+
+    @RequestMapping(value="/downloadFile", method = RequestMethod.GET)
+    public String downloadFile(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
+        if(!isUserLoggedIn(session)) {
+            return FORWARD_HOMEPAGE;
+        }
+            DownloadFileRequest.Builder dfrBuilder = new DownloadFileRequest.Builder();
+            dfrBuilder.userId(getUserIdFromSession(session)).id(Long.parseLong(request.getParameter("id")))
+                    .response(response).build().process();
+        return FORWARD_HOME;
+    }
+
+    @RequestMapping(value="/deleteFile", method = RequestMethod.POST)
+    public String deleteFile(@ModelAttribute(DELETE_FILE_REQUEST)DeleteFileRequest request, BindingResult result,
+                             Model model, HttpSession session) {
+        if(!isUserLoggedIn(session)) {
+            return FORWARD_HOMEPAGE;
+        }
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+        } else {
+            Response response = request.process();
+            model.addAttribute("response", response);
+        }
+        return FORWARD_HOME;
     }
 }

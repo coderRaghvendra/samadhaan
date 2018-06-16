@@ -1,54 +1,47 @@
-package com.samadhaan4u.model.entity;
+package com.samadhaan4u.dto;
 
 import com.samadhaan4u.dto.constant.UserType;
+import com.samadhaan4u.model.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by raghvendra.mishra on 01/02/18.
+ * Created by raghvendra.mishra on 19/05/18.
  */
-public class User extends AbstractEntity{
-
-    private static final Logger logger = LoggerFactory.getLogger(User.class);
+public class UserDto {
+    private static final Logger logger = LoggerFactory.getLogger(UserDto.class);
+    private long id;
     private String fname;
     private String lname;
     private String email;
-    private String password;
     private long phoneNo;
     private boolean emailVerified;
-    private String emailKey;
-    private boolean status;
     private UserType type;
     private Timestamp creationTime;
 
-    public User(){ super(); }
-
-    protected User(Builder builder){
-        super(builder);
+    protected UserDto(Builder builder){
+        this.id = builder.id;
         this.fname = builder.fname;
         this.lname = builder.lname;
         this.email = builder.email;
-        this.password = builder.password;
         this.phoneNo = builder.phoneNo;
         this.emailVerified = builder.emailVerified;
-        this.emailKey = builder.emailKey;
-        this.status = builder.status;
         this.type = builder.type;
         this.creationTime = builder.creationTime;
     }
 
-    public static class Builder extends AbstractEntity.Builder<User, Builder>{
+    public static class Builder{
 
+        private long id;
         private String fname;
         private String lname;
         private String email;
-        private String password;
         private long phoneNo;
         private boolean emailVerified;
-        private String emailKey;
-        private boolean status;
         private UserType type;
         private Timestamp creationTime;
 
@@ -56,11 +49,21 @@ public class User extends AbstractEntity{
             super();
         }
 
-        @Override
-        public User build(){ return new User(this);}
+        public Builder(User user) {
+            super();
+            id(user.getId()).fname(user.getFname()).lname(user.getLname()).email(user.getEmail())
+                    .phoneNo(user.getPhoneNo()).emailVerified(user.isEmailVerified())
+                    .type(user.getType()).creationTime(user.getCreationTime());
+        }
 
-        @Override
+        public UserDto build(){ return new UserDto(this);}
+
         public Builder self() {
+            return this;
+        }
+
+        public Builder id(long id) {
+            this.id = id;
             return this;
         }
 
@@ -79,11 +82,6 @@ public class User extends AbstractEntity{
             return this;
         }
 
-        public Builder password(String password) {
-            this.password = password;
-            return this;
-        }
-
         public Builder phoneNo(long phoneNo) {
             this.phoneNo = phoneNo;
             return this;
@@ -91,16 +89,6 @@ public class User extends AbstractEntity{
 
         public Builder emailVerified(boolean emailVerified) {
             this.emailVerified = emailVerified;
-            return this;
-        }
-
-        public Builder emailKey(String emailKey) {
-            this.emailKey = emailKey;
-            return this;
-        }
-
-        public Builder status(boolean status) {
-            this.status = status;
             return this;
         }
 
@@ -113,6 +101,16 @@ public class User extends AbstractEntity{
             this.creationTime = creationTime;
             return this;
         }
+
+        public Builder entity(User user){
+            return this.id(user.getId()).fname(user.getFname()).lname(user.getLname()).email(user.getEmail())
+                    .phoneNo(user.getPhoneNo()).emailVerified(user.isEmailVerified()).type(user.getType())
+                    .creationTime(user.getCreationTime());
+        }
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getFname() {
@@ -127,10 +125,6 @@ public class User extends AbstractEntity{
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public long getPhoneNo() {
         return phoneNo;
     }
@@ -139,59 +133,11 @@ public class User extends AbstractEntity{
         return emailVerified;
     }
 
-    public String getEmailKey() {
-        return emailKey;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
     public UserType getType() {
         return type;
     }
 
     public Timestamp getCreationTime() {
         return creationTime;
-    }
-
-    public void setFname(String fname) {
-        this.fname = fname;
-    }
-
-    public void setLname(String lname) {
-        this.lname = lname;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setPhoneNo(long phoneNo) {
-        this.phoneNo = phoneNo;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
-    public void setEmailKey(String emailKey) {
-        this.emailKey = emailKey;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public void setType(UserType type) {
-        this.type = type;
-    }
-
-    public void setCreationTime(Timestamp creationTime) {
-        this.creationTime = creationTime;
     }
 }

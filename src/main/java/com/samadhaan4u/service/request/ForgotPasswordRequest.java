@@ -18,7 +18,8 @@ public class ForgotPasswordRequest extends AbstractRequest {
     private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordRequest.class);
     private String email;
 
-    public ForgotPasswordRequest(){super();}
+    public ForgotPasswordRequest(){ super();}
+
     protected ForgotPasswordRequest(Builder builder){
         super(builder);
         this.email = builder.email;
@@ -32,6 +33,11 @@ public class ForgotPasswordRequest extends AbstractRequest {
             super();
         }
 
+        public Builder(String email) {
+            super();
+            email(email);
+        }
+
         @Override
         public ForgotPasswordRequest build(){ return new ForgotPasswordRequest(this);}
 
@@ -42,35 +48,40 @@ public class ForgotPasswordRequest extends AbstractRequest {
 
         public Builder email(String email) {
             this.email = email;
-            return this;
+            return self();
         }
     }
 
     public Response process(){
-
-        ForgotPasswordResponse.Builder srBuilder = new ForgotPasswordResponse.Builder();
+        logger.info("ForgotPasswordRequest received, being processed.");
+        ForgotPasswordResponse.Builder fprBuilder = new ForgotPasswordResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
-        Result result;
-        String newPassword = getNewPassword(email);
-        String subject = "New Temporary Password";
-        String content = "New Temporary Password = " + newPassword;
-        SendMailRequest.Builder smBuilder = new SendMailRequest.Builder();
-        Response mailResponse = smBuilder.from("qwertyraghav@gmail.com").password("_Raghav@385848").to(email)
-                .sub(subject).mailContent(content).build().process();
-        if(mailResponse.getResult().isSuccess() && DaoManager.userDao().updatePassword(email, newPassword)){
-            logger.info("New Password mail sent successfully.");
-            result = rBuilder.success(true).message(ResponseMessage.NEW_PASSWORD_SENT).build();
-        } else{
-            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
+        boolean success = false;
+        try {
+            String newPassword = getNewPassword(email);
+            String subject = "New Temporary Password";
+            String content = "New Temporary Password = " + newPassword;
+            Response mailResponse = new SendMailRequest.Builder(email, subject, content).build().process();
+            if(mailResponse.getResult().isSuccess() && DaoManager.userDao().updatePassword(email, newPassword)){
+                logger.info("New Password mail sent successfully.");
+                rBuilder.message(ResponseMessage.NEW_PASSWORD_SENT);
+                success = true;
+            } else{
+                rBuilder.message(ResponseMessage.INTERNAL_ERROR);
+            }
+            logger.info("ForgotPasswordRequest processed successfully.");
+        } catch(Exception e){
+            logger.info("Exception occurred while processing ForgotPasswordRequest for user id {}.", this.userId);
+            rBuilder.success(success).message(ResponseMessage.EXCEPTION_OCCURRED);
         }
-        return srBuilder.result(result).build();
+        return fprBuilder.userId(this.userId).result(rBuilder.success(success).build()).build();
     }
 
     public String getEmail() {
         return email;
     }
 
-    private static String getNewPassword(String email){
+    private String getNewPassword(String email){
         Random random = new Random();
         return email.substring(0,4) + String.valueOf(random.nextInt(100_000));
     }

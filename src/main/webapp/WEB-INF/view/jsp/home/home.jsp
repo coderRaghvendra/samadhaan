@@ -33,7 +33,7 @@
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <div class="mr-auto"></div>
         <ul class="navbar-nav" style="">
-            <c:if test="${responseDto.user.type == 'ADMIN'}">
+            <c:if test="${response.user.type == 'ADMIN'}">
                 <li class="nav-item" style="padding-right: 10px;">
                     <a class="nav-link" href="/viewUsers" style="font-size: 14px; text-decoration: underline;">
                         view users
@@ -74,7 +74,7 @@
         <div class="col-sm-12 col-md-8 col-lg 8">
             <div>
                 <div>
-                    <h2>Hi ${responseDto.user.fname} !!</h2>
+                    <h2>Hi ${response.user.fname} !!</h2>
                 </div>
                 <h3> Welcome to <span style="color: #cc6600;">samadhaan</span></h3>
             </div>
@@ -87,7 +87,7 @@
                                enctype="multipart/form-data">
                         <form:input type="file" path="file" id="file" class="form-control input-sm"/>
                         <form:input type="hidden" path="userId" id="userId" class="form-control input-sm"
-                                    value="${responseDto.userId}"/>
+                                    value="${response.userId}"/>
                         <input type="submit" class="inp-submit" value="UPLOAD"/>
                     </form:form>
                 </div>
@@ -102,19 +102,21 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>File Name</th>
+                        <th>File</th>
                         <th>Uploaded Date</th>
-                        <th>Description</th>
+                        <th>Download</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
                     <c:set var="count" value="1" scope="page" />
-                    <c:forEach items="${responseDto.documentList}" var="document">
+                    <c:forEach items="${response.documents}" var="document">
                         <tr>
                             <th scope="row">${count}</th>
-                            <td>${document.name}</td>
-                            <td>${document.uploadDate}</td>
                             <td>${document.description}</td>
+                            <td>${document.uploadDate}</td>
+                            <td><a href="/downloadFile?id=${document.id}"><img src="/resources/image/application/download.png"> Download</a></td>
+                            <td><a href="/deleteFile?id=${document.id}"><img src="/resources/image/application/delete.png"> Delete</a></td>
                         </tr>
                         <c:set var="count" value="${count + 1}" scope="page"/>
                     </c:forEach>

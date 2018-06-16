@@ -57,36 +57,44 @@ public class SignUpRequest extends AbstractRequest{
     }
 
     public Response process(){
-
-        SignUpResponse.Builder srBuilder = new SignUpResponse.Builder();
+        logger.info("SignUpRequest received, being processed.");
+        SignUpResponse.Builder surBuilder = new SignUpResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
-        Result result;
+        boolean success = false;
         String emailKey = email+ UUID.randomUUID().toString();
-        //check if email already exist
-        if(DaoManager.userDao().isEmailExist(email)){
-            result = rBuilder.success(false).message(ResponseMessage.USER_ALREADY_REGISTERED).build();
-        }else if(DaoManager.userDao().insert(email, password, emailKey)){
+        try {
+            //check if email already exist
+            if (DaoManager.userDao().isEmailExist(email)) {
+                rBuilder.success(success).message(ResponseMessage.USER_ALREADY_REGISTERED).build();
+            } else if (DaoManager.userDao().add(new User.Builder().email(this.email).password(this.password)
+                    .emailKey(emailKey).build())) {
 
-            String link = "localhost:8080/verifyEmail?emailKey=" + emailKey;
-            String subject = "Email verification from  www.samadhaan.com";
-            String mailContent = "<div>please ch click on" +
-                    " this link to verify your email <a href=\"www.google.com\">click</a></div>";
-            //send verification mail
-            SendMailRequest.Builder smBuilder = new SendMailRequest.Builder();
-            Response mailResponse = smBuilder.from("qwertyraghav@gmail.com").password("_Raghav@385848").to(email)
-                    .sub(subject).mailContent(createMailContent(emailKey)).build().process();
-            if(mailResponse.getResult().isSuccess()){
-                logger.info("Verification mail sent successfully.");
-                result = rBuilder.success(true).message(ResponseMessage.VERIFY_EMAIL).build();
+                String link = "localhost:8080/verifyEmail?emailKey=" + emailKey;
+                String subject = "Email verification from  www.samadhaan.com";
+                String mailContent = "<div>please click on" +
+                        " this link to verify your email <a href=\"" + link + "\">click</a></div>";
+                //send verification mail
+                SendMailRequest.Builder smBuilder = new SendMailRequest.Builder();
+                Response mailResponse = smBuilder.from("qwertyraghav@gmail.com").password("_Raghav@385848").to(email)
+                        .sub(subject).mailContent(createMailContent(emailKey)).build().process();
+                if (mailResponse.getResult().isSuccess()) {
+                    logger.info("Verification mail sent successfully.");
+                    success = true;
+                    rBuilder.message(ResponseMessage.REGISTERED_SUCCESSFULLY).build();
+                } else {
+                    logger.info("Verification mail could not be sent.");
+                    rBuilder.message(ResponseMessage.INTERNAL_ERROR).build();
+                }
+            } else {
+                logger.info("Internal error occurred while adding new user.");
+                rBuilder.message(ResponseMessage.INTERNAL_ERROR).build();
             }
-            else {
-                logger.info("Verification mail could not be sent.");
-                result = rBuilder.success(true).message(ResponseMessage.INTERNAL_ERROR).build();
-            }
-        }else
-            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
-
-        return srBuilder.result(result).build();
+        } catch(Exception e){
+            logger.info("Exception occurred while signing up new user.");
+            e.printStackTrace();
+            rBuilder.message(ResponseMessage.INTERNAL_ERROR).build();
+        }
+        return surBuilder.result(rBuilder.success(success).build()).build();
     }
 
     public String getEmail() {

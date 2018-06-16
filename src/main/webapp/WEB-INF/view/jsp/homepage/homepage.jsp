@@ -18,6 +18,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <style>
+        .slider-bg {
+            /*height: 200px;*/
+            background: #cc6600; /* For browsers that do not support gradients */
+            background: linear-gradient(to top, rgba(255,0,0,0), rgba(204, 102, 0,1));
+            /* Standard syntax (must be last) */
+        }
+    </style>
 </head>
 <body>
 
@@ -41,7 +50,7 @@
                 </form:form>
                 <div style="font-size: 13px; padding-top: 20px;">
                     <span style="opacity: 0.6;">Already have an account. Click here to</span>
-                    <a href="" style="color: #cc6600; opacity: 0.9;"> SIGN IN </a>
+                    <a href="javascript:()" style="color: #cc6600; opacity: 0.9;" id="signInFromSignUpModal"> SIGN IN </a>
                     <span style="opacity: 0.6;">!!</span>
                 </div>
             </div>
@@ -71,17 +80,8 @@
                     <a href="javascript:()" style="font-size: 13px;" class="" id="forgotPasswordLink">
                         Forgot your password?
                     </a><br/>
-                    <%--forgot password form--%>
-                    <div id="forgotPasswordForm" class="hidden">
-                        <form:form method="POST" action="/forgotPassword" modelAttribute="forgotPasswordRequest">
-                            Enter your email address, we will send temporary password<br/>
-                            <img src="/resources/image/application/lock.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
-                            <form:input path="email" cssClass="input-ovd" placeholder="Email"/><br/><br/>
-                            <input type="submit" class="inp-submit" value="SEND PASSWORD"/>
-                        </form:form><br/><br/>
-                    </div>
                     <span style="opacity: 0.6;">Do not have an account. Click here to</span>
-                    <a href="" style="color: #cc6600; opacity: 0.9;"> SIGN UP </a>
+                    <a href="javascript:()" style="color: #cc6600; opacity: 0.9;" id="signUpFromSignInModal"> SIGN UP </a>
                     <span style="opacity: 0.6;">!!</span>
                 </div>
             </div>
@@ -90,6 +90,34 @@
     </div>
 </div>
 <!-- sign in modal end -->
+<!-- forgot password modal start -->
+<div class="modal fade" id="forgotPasswordModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style=";">
+            <!-- Modal body start-->
+            <div class="modal-body" style="text-align: center; padding: 50px 10px 10px 10px;">
+                <div><img src="/resources/image/application/fin_icon.svg"
+                          style="height: 50px; width: 50px;"/>
+                </div><br/>
+                <div style="opacity: 0.8;">
+                    <h6>
+                        Enter your registered email id. We will send temporary password on your mail.<br/>
+                        Use that for log in and change your password later.
+                    </h6>
+                </div><br/>
+                <div id="forgotPasswordForm">
+                    <form:form method="POST" action="/forgotPassword" modelAttribute="forgotPasswordRequest">
+                        <img src="/resources/image/application/close-envelope.png" style="opacity: 0.7;"/>&nbsp;&nbsp;
+                        <form:input path="email" cssClass="input-ovd" placeholder="Email Id"/><br/><br/>
+                        <input type="submit" class="inp-submit" value="SEND TEMPORARY PASSWORD"/>
+                    </form:form><br/><br/>
+                </div>
+            </div>
+            <!-- Modal body end-->
+        </div>
+    </div>
+</div>
+<!-- forgot password modal end -->
 
 <!--header start-->
 <nav class="navbar navbar-expand-md fixed-top navbar-dark"
@@ -104,13 +132,13 @@
         <div class="mr-auto"></div>
         <ul class="navbar-nav" style="">
             <li class="nav-item">
-                <a class="nav-link" href="#">ABOUT</a>
+                <a class="nav-link" id="aboutLink" href="#">ABOUT</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">SERVICES</a>
+                <a class="nav-link" id="serviceLink" href="#">SERVICES</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">CONTACT</a>
+                <a class="nav-link" id="contactLink" href="#">CONTACT</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" data-toggle="modal"
@@ -139,12 +167,12 @@
                     Samadhaan
                 </div>
                 <div class="">
-                    One Solution to all.Taxes, ITR, GST and more.
+                    solve all your financial issues in one place
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="aboutRow">
         <div class="col-md-12 col-lg-8">
             <div class="about">
                 <div class="" style="opacity: 0.8;">ABOUT US</div>
@@ -163,22 +191,65 @@
                     response to their needs and regular internal reviews.
                 </div>
             </div>
+            <div style="height: 20px;"></div>
         </div>
         <div class="col-md-12 col-lg-4">
-            <div style="padding-top: 50px;">
-            <img src="/resources/image/application/fin_icon.svg"/>
+            <div style="padding: 50px 10% 50px 10%;">
+                <img src="/resources/image/application/fin_icon.svg"/>
+            </div>
+            <div style="height: 20px;"></div>
+
+        </div>
+    </div>
+    <div class="row" id="reviewRow">
+        <div class="col"  style="padding: 0px;">
+            <div id="carouselExampleIndicators" class="carousel slide slider-bg" data-ride="carousel"
+                 style="padding: 100px 10%;">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <c:set var = "active" scope = "session" value = "active"/>
+                    <c:forEach items="${reviews}" var="review">
+                        <div class="carousel-item ${active}">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div align="center">
+                                            ${review.reviewContent} <br/>${review.reviewer}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div align="center">
+                                        <img src="/resources/image/application/${review.imagePath}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <c:set var = "active" scope = "session" value = ""/>
+                    </c:forEach>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="serviceRow">
         <div class="col" style="padding: 0px;">
             <div class="service">
-                <div class="serv-head">SERVICES</div>
-                <div class="serv-head"><h2>We provide solutions for </h2></div><br/>
+                <div class="" style="opacity: 0.8;">SERVICES</div>
+                <div class=""><h2>We provide solutions for </h2></div><br/>
                 <div class="row">
-                    <c:forEach items="${serviceArray}" var="service">
+                    <c:forEach items="${services}" var="service">
                         <div class="col-sm-4 col-md-3 col-lg-3"
-                             style="padding: 6px;">
+                             style="padding: 10px 10px 40px 10px;">
                             <div class="serv-card">
                                 <div style="padding: 30px 10px; background: #cc6600; border-radius: 3px 3px 0px 0px;">
                                     <img src="/resources/image/application/${service.imagePath}">
@@ -193,11 +264,12 @@
                         </div>
                     </c:forEach>
                 </div>
+                <div style="height: 20px;"></div>
             </div>
         </div>
     </div>
     <!--footer start-->
-    <div class="row contact-bg">
+    <div class="row contact-bg" id="contactRow">
         <div class="col-sm-12 col-md-12 col-lg-6 footer" style="">
             <div class="contact">
                 <img src="/resources/image/application/user-24px.png" class="img-16">&nbsp;
@@ -266,6 +338,7 @@
 </div>
 <!--body end-->
 <script>
+
     $(document).ready(function(){
         var scroll_pos = 0;
         $(document).scroll(function() {
@@ -278,7 +351,33 @@
         });
 
         $("#forgotPasswordLink").click(function(){
-            $("#forgotPasswordForm").toggle();
+            $("#signInModal").modal('hide');
+            $("#forgotPasswordModal").modal('show');
+        });
+
+        $("#aboutLink").click(function() {
+            $('html,body').animate({
+                scrollTop: $("#aboutRow").offset().top - 30}, 'slow');
+        });
+
+        $("#serviceLink").click(function() {
+            $('html,body').animate({
+                scrollTop: $("#serviceRow").offset().top - 30}, 'slow');
+        });
+
+        $("#contactLink").click(function() {
+            $('html,body').animate({
+                scrollTop: $("#contactRow").offset().top - 30}, 'slow');
+        });
+
+        $("#signInFromSignUpModal").click(function(){
+            $("#signUpModal").modal('hide');
+            $("#signInModal").modal('show');
+        });
+
+        $("#signUpFromSignInModal").click(function(){
+            $("#signInModal").modal('hide');
+            $("#signUpModal").modal('show');
         });
     });
 </script>

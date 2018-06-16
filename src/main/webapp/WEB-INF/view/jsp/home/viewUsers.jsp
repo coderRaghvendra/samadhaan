@@ -80,6 +80,8 @@
                         <th>id</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Phone No</th>
+                        <th>Created on</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -87,9 +89,11 @@
                     <c:forEach items="${responseDto.userList}" var="user">
                         <tr>
                             <th scope="row">${count}</th>
-                            <td>${user.id}</td>
-                            <td>${user.name}</td>
+                            <td><a href="/user?userId=${user.id}">${user.id}</a></td>
+                            <td>${user.fname} ${user.lname}</td>
                             <td>${user.email}</td>
+                            <td>${user.phoneNo}</td>
+                            <td>${user.creationTime}</td>
                         </tr>
                         <c:set var="count" value="${count + 1}" scope="page"/>
                     </c:forEach>

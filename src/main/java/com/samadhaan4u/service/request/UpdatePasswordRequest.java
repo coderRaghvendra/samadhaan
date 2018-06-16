@@ -45,32 +45,34 @@ public class UpdatePasswordRequest extends AbstractRequest {
     }
 
     public Response process(){
+        logger.info("UpdatePasswordRequest received, being processed.");
         UpdatePasswordResponse.Builder uurBuilder = new UpdatePasswordResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
-        Result result;
+        boolean success = false;
         try{
-            User oldUser = DaoManager.userDao().select(this.userId);
+            User oldUser = DaoManager.userDao().get(this.userId).orElse(null);
             if(StringUtils.isNotBlank(this.oldPassword) && StringUtils.isNotBlank(this.newPasswordConfirm)
                     && StringUtils.isNotBlank(this.newPassword)){
                 if(oldPassword.equals(oldUser.getPassword())){
                     oldUser.setPassword(this.newPassword);
-                    if(newPassword.equals(newPasswordConfirm) && DaoManager.userDao().updateUser(oldUser)){
-                        result = rBuilder.success(true).message(ResponseMessage.USER_UPDATED).build();
+                    if(newPassword.equals(newPasswordConfirm) && DaoManager.userDao().update(oldUser)){
+                        success = true;
+                        rBuilder.message(ResponseMessage.USER_UPDATED).build();
                     } else {
-                        result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
+                        rBuilder.message(ResponseMessage.INTERNAL_ERROR).build();
                     }
-                }
-                else{
-                    result = rBuilder.success(false).message(ResponseMessage.WRONG_PASSWORD).build();
+                } else{
+                    rBuilder.message(ResponseMessage.WRONG_PASSWORD).build();
                 }
             } else {
-                result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
+                rBuilder.message(ResponseMessage.INTERNAL_ERROR).build();
             }
         } catch(Exception e){
-            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
+            logger.info("Exception occurred while updating password.");
+            rBuilder.message(ResponseMessage.INTERNAL_ERROR).build();
             e.printStackTrace();
         }
-        return uurBuilder.result(result).build();
+        return uurBuilder.result(rBuilder.success(success).build()).build();
     }
 
     public String getOldPassword() {

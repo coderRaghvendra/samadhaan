@@ -58,27 +58,32 @@ public class SignInRequest extends AbstractRequest{
     }
 
     public Response process(){
-
+        logger.info("SignInRequest received, being processed.");
         SignInResponse.Builder srBuilder = new SignInResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
-        Result result;
-        User user = DaoManager.userDao().select(email);
-        if(user != null){
-            if(user.getPassword().equals(password)){
-                if(user.isEmailVerified()){
-                    result = rBuilder.success(true).message(ResponseMessage.SIGN_IN_SUCCESS).build();
-                    srBuilder.user(user).documentList(DaoManager.documentDao().select(user.getId()));
-                }else{
-                    result = rBuilder.success(false).message(ResponseMessage.EMAIL_NOT_VERIFIED).build();
+        boolean success = false;
+        try {
+            User user = DaoManager.userDao().get(email).orElse(null);
+            if (user != null) {
+                if (user.getPassword().equals(password)) {
+                    if (user.isEmailVerified()) {
+                        success = true;
+                        rBuilder.message(ResponseMessage.SIGN_IN_SUCCESS);
+                        srBuilder.userId(user.getId());
+                    } else {
+                        rBuilder.message(ResponseMessage.EMAIL_NOT_VERIFIED).build();
+                    }
+                } else {
+                    rBuilder.message(ResponseMessage.WRONG_PASSWORD).build();
                 }
-            } else{
-                result = rBuilder.success(false).message(ResponseMessage.WRONG_PASSWORD).build();
+            } else {
+                rBuilder.message(ResponseMessage.EMAIL_NOT_REGISTERED).build();
             }
-        }else{
-            result = rBuilder.success(false).message(ResponseMessage.EMAIL_NOT_REGISTERED).build();
+        } catch(Exception e){
+            logger.info("Exception occurred while signing in user.");
+            rBuilder.message(ResponseMessage.INTERNAL_ERROR).build();
         }
-
-        return srBuilder.userId(user.getId()).result(result).build();
+        return srBuilder.result(rBuilder.success(success).build()).build();
     }
 
     public String getEmail() {

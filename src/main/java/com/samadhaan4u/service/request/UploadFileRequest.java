@@ -23,11 +23,11 @@ public class UploadFileRequest extends AbstractRequest {
     private static final Logger logger = LoggerFactory.getLogger(UploadFileRequest.class);
     private MultipartFile file;
 
-    public UploadFileRequest(){super();}
+    public UploadFileRequest(){ super();}
+
     protected UploadFileRequest(Builder builder){
         super(builder);
         this.file = builder.file;
-
     }
 
     public static class Builder extends AbstractRequest.Builder<UploadFileRequest, Builder>{
@@ -53,25 +53,26 @@ public class UploadFileRequest extends AbstractRequest {
     }
 
     public Response process(){
-        logger.info("in uoload file request, userid = " + this.userId);
-        UploadFileResponse.Builder ufBuilder = new UploadFileResponse.Builder();
+        logger.info("UploadFileRequest received, being processed.");
+        UploadFileResponse.Builder gudrBuilder = new UploadFileResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
-        Result result;
-        try{
-            String UPLOAD_LOCATION = "";
+        boolean success = false;
+        try {
             String timestamp = (new Timestamp(System.currentTimeMillis())).toString()
                     .replaceAll(" ", "_");
-            String newFileName = userId + "_" + timestamp + "_" + file.getOriginalFilename();
+            String newFileName = this.userId + "_" + timestamp + "_" + file.getOriginalFilename();
             FileCopyUtils.copy(file.getBytes(), new File(DOCUMENT_UPLOAD_LOCATION + newFileName));
             Document.Builder dBuilder = new Document.Builder();
-            DaoManager.documentDao().insert(dBuilder.name(newFileName).description(file.getOriginalFilename())
-                    .userId(this.userId).path(DOCUMENT_UPLOAD_LOCATION).build());
-            result = rBuilder.success(true).message(ResponseMessage.FILE_UPLOADED).build();
+            success = DaoManager.documentDao().add(dBuilder.name(newFileName).description(file.getOriginalFilename())
+                    .userId(this.userId).build());
+            rBuilder.message(ResponseMessage.FILE_UPLOADED);
+            success = true;
+            logger.info("UploadFileRequest processed successfully.");
         } catch(Exception e){
-            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
-            e.printStackTrace();
+            logger.info("Exception occurred while processing UploadFileRequest for user id {}.", this.userId);
+            rBuilder.message(ResponseMessage.EXCEPTION_OCCURRED);
         }
-        return ufBuilder.result(result).build();
+        return gudrBuilder.userId(this.userId).result(rBuilder.success(success).build()).build();
     }
 
     public MultipartFile getFile() {

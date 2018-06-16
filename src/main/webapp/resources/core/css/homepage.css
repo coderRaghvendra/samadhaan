@@ -4,7 +4,7 @@
     background-image: url("/resources/image/application/wlp_fin2.jpg");
 }
 .bg{
-    background: rgba(0,0,0,0.7);
+    background: rgba(204, 102, 0,0.7);
 }
 .brand{
     height: 700px;
@@ -12,12 +12,12 @@
 }
 .about{
     /*height: 500px;*/
-    padding: 50px 10%;
+    padding: 100px 10%;
     /*background: rgba(100,100,100,1);*/
 }
 .service{
-    padding: 40px 10%;
-    background: rgba(0,0,0,0.7);
+    padding: 100px 10%;
+    background: rgba(0,0,0,0.2);
 }
 .serv-head{
     color: white;
@@ -87,8 +87,4 @@
 .img-16{
     height: 16px;
     width: 16px;
-}
-.serv-head{
-    color: white;
-    opacity: 0.8;
 }

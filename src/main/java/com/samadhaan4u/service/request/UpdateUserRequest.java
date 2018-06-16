@@ -38,13 +38,12 @@ public class UpdateUserRequest extends AbstractRequest {
     }
 
     public Response process(){
-        logger.info("in uoload file request, userid = " + this.userId);
-        logger.info("user update phone no = " + this.user.getPhoneNo());
-        UpdateUserResponse.Builder uurBuilder = new UpdateUserResponse.Builder();
+        logger.info("UpdateUserRequest received, being processed.");
+        UpdateUserResponse.Builder gudrBuilder = new UpdateUserResponse.Builder();
         Result.Builder rBuilder = new Result.Builder();
-        Result result;
-        try{
-            User oldUser = DaoManager.userDao().select(this.userId);
+        boolean success = false;
+        try {
+            User oldUser = DaoManager.userDao().get(this.userId).orElse(null);
             boolean updateFlag = false;
             if(StringUtils.isNotBlank(this.user.getFname()) || StringUtils.isNotBlank(this.user.getLname())){
                 updateFlag = true;
@@ -54,17 +53,18 @@ public class UpdateUserRequest extends AbstractRequest {
                 updateFlag = true;
                 oldUser.setPhoneNo(this.user.getPhoneNo());
             }
-            logger.info("user update phone no = " + this.user.getPhoneNo());
-            if(updateFlag && DaoManager.userDao().updateUser(oldUser)){
-                result = rBuilder.success(true).message(ResponseMessage.USER_UPDATED).build();
+            if(updateFlag && DaoManager.userDao().update(oldUser)){
+                success = true;
+                rBuilder.message(ResponseMessage.USER_UPDATED).build();
             } else{
-                result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
+                rBuilder.message(ResponseMessage.INTERNAL_ERROR).build();
             }
+            logger.info("UpdateUserRequest processed successfully.");
         } catch(Exception e){
-            result = rBuilder.success(false).message(ResponseMessage.INTERNAL_ERROR).build();
-            e.printStackTrace();
+            logger.info("Exception occurred while processing UpdateUserRequest for user id {}.", this.userId);
+            rBuilder.message(ResponseMessage.EXCEPTION_OCCURRED);
         }
-        return uurBuilder.result(result).build();
+        return gudrBuilder.userId(this.userId).result(rBuilder.success(success).build()).build();
     }
 
     public User getUser() {

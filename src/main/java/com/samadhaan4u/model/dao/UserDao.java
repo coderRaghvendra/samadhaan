@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by raghvendra.mishra on 01/02/18.
@@ -16,32 +17,43 @@ public class UserDao extends AbstractDao{
 
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
-    public boolean insert(String email, String password, String emailKey){
+    public boolean add(User user){
         try{
+            if(user == null){
+                logger.info("user is null...returning false");
+                return false;
+            }
+            logger.info("inserting new user {} in user_ table" , user.getEmail());
             Connection con = createConnection();
             PreparedStatement pst = con.prepareStatement("insert into user_ " +
                     "(email,password,email_key,type) values(?, ?, ?, ?)");
-            pst.setString(1, email);
-            pst.setString(2, password);
-            pst.setString(3, emailKey);
-            pst.setInt(4, UserType.USER.id());
-            int nor = pst.executeUpdate();
-            logger.info(nor + " row inserted");
+            pst.setString(1, user.getEmail());
+            pst.setString(2, user.getPassword());
+            pst.setString(3, user.getEmailKey());
+            pst.setInt(4, user.getType().id());
+            boolean userInserted = pst.execute();
             con.close();
-            return nor > 0;
+            if(userInserted){
+                logger.info(" user {} inserted successfully", user.getEmail());
+            }else{
+                logger.info(" user {} could not be inserted", user.getEmail());
+            }
+            return userInserted;
         }catch(Exception e){
-
-            logger.info("Exception caught");
+            logger.info("exception occurred while inserting user {}", user.getEmail());
             e.printStackTrace();
         }
         return false;
     }
 
-    public User select(String email){
-
+    public Optional<User> get(String email){
+        if(email == null){
+            logger.info("email is null...returning null");
+            return null;
+        }
+        logger.info("fetching user {} from user_ table" , email);
         User user = null;
         try{
-
             Connection con = createConnection();
             PreparedStatement pst = con.prepareStatement("select * from user_ " +
                     "where email = ?");
@@ -60,18 +72,26 @@ public class UserDao extends AbstractDao{
                         .build();
             }
             con.close();
+            if(user != null){
+                logger.info(" user {} fetched successfully", email);
+            }else{
+                logger.info(" user {} could not be fetched", email);
+            }
         }catch(Exception e){
-            logger.info("Exception caught");
+            logger.info("exception occurred while fetching user {}", user.getEmail());
             e.printStackTrace();
         }
-        return user;
+        return Optional.of(user);
     }
 
-    public User select(long id){
-
+    public Optional<User> get(long id){
+        if(id <= 0){
+            logger.info("wrong user id = {}, returning null", id);
+            return null;
+        }
+        logger.info("fetching user id {} from user_ table" , id);
         User user = null;
         try{
-
             Connection con = createConnection();
             PreparedStatement pst = con.prepareStatement("select * from user_ " +
                     "where id = ?");
@@ -86,18 +106,23 @@ public class UserDao extends AbstractDao{
                         .emailKey(rst.getString("email_key"))
                         .status(rst.getBoolean("status"))
                         .type(UserType.valueOf(rst.getInt("type")))
-                        .creationTime(rst.getTimestamp("creation_time")).build();
+                        .creationTime(rst.getTimestamp("creation_time"))
+                        .build();
             }
             con.close();
+            if(user != null){
+                logger.info(" user id {} fetched successfully", id);
+            }else{
+                logger.info(" user id {} could not be fetched", id);
+            }
         }catch(Exception e){
-            logger.info("Exception caught");
+            logger.info("exception occurred while inserting user id {}", id);
             e.printStackTrace();
         }
-        return user;
+        return Optional.of(user);
     }
 
-    public List<User> selectMultiple(){
-
+    public Optional<List<User>> get(){
         List<User> userList = null;
         try{
             Connection con = createConnection();
@@ -121,7 +146,7 @@ public class UserDao extends AbstractDao{
             logger.info("Exception caught");
             e.printStackTrace();
         }
-        return userList;
+        return Optional.of(userList);
     }
 
     public boolean updatePassword(String email, String password){
@@ -164,13 +189,11 @@ public class UserDao extends AbstractDao{
 
     public boolean verifyEmail(String emailVerificationKey){
         try{
-
             Connection con = createConnection();
             PreparedStatement pst = con.prepareStatement("update user_ " +
                     "set email_verified = 1 where email_key = ?");
             pst.setString(1, emailVerificationKey);
-            int nor = pst.executeUpdate();
-            if(nor > 0)
+            if(pst.executeUpdate() == 1)
                 return true;
         }catch(Exception e){
 
@@ -180,7 +203,7 @@ public class UserDao extends AbstractDao{
         return false;
     }
 
-    public boolean updateUser(User user){
+    public boolean update(User user){
         try{
             logger.info("user phone no in dao = " + user.getPhoneNo());
             Connection con = createConnection();

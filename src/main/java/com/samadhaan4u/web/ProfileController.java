@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
  * Created by raghvendra.mishra on 31/01/18.
  */
 @Controller
-public class ProfileController {
+public class ProfileController extends AbstractController{
     private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
     @RequestMapping(value="/updateUser", method = RequestMethod.POST)

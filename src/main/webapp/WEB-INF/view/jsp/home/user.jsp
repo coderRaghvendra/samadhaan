@@ -1,32 +1,80 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: raghvendra.mishra
+  Date: 31/01/18
+  Time: 2:28 PM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>www.samadhaan.com</title>
-    <link rel="stylesheet" type="text/css" href="/resources/core/css/document.css">
+    <link rel="stylesheet" type="text/css" href="/resources/core/css/profile.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
 </head>
 <body>
 <!--header start-->
 <nav class="navbar navbar-expand-md fixed-top navbar-light"
-     style="border-bottom: 2px solid #cc6600;">
-    <a class="navbar-brand" href="#">
+     style="padding-bottom: 0px; border-bottom: 1px solid #cc6600; background: white;
+     box-shadow: 0px 0px 10px #bfbfbf;"
+     id="navHeader">
+    <a class="navbar-brand" href="#" style="">
         Samadhaan
     </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon" style=""></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <div class="mr-auto"></div>
+        <ul class="navbar-nav" style="">
+            <c:if test="${responseDto.user.type == 'ADMIN'}">
+                <li class="nav-item" style="padding-right: 10px;">
+                    <a class="nav-link" href="/viewUsers" style="font-size: 14px; text-decoration: underline;">
+                        view users
+                    </a>
+                </li>
+                <li class="nav-item" style="padding-right: 10px;">
+                    <a class="nav-link" href="/search" style="font-size: 14px; text-decoration: underline;">
+                        search
+                    </a>
+                </li>
+            </c:if>
+            <li class="nav-item" style="padding-right: 10px;">
+                <a class="nav-link" href="/" style="">
+                    <img src="/resources/image/application/home-bl.png">
+                    Home
+                </a>
+            </li>
+            <li class="nav-item" style="padding-right: 10px; border-bottom: 3px solid #cc6600;">
+                <a class="nav-link" href="/profile" style="color: #cc6600;">
+                    <img src="/resources/image/application/document-or.png">
+                    Profile
+                </a>
+            </li>
+            <li class="nav-item" style="">
+                <a class="nav-link" href="/signOut">
+                    <img src="/resources/image/application/face-bl.png">
+                    Sign Out
+                </a>
+            </li>
+        </ul>
+    </div>
+
 </nav>
 <!--header end-->
-
 <div class="container">
     <!--profile start-->
     <div class="row">
         <div class="col-12" style="">
             <div style="height: 80px;"></div>
         </div>
-
         <div class="col">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div style="border: 1px solid #cccccc; padding: 10px 20px; box-shadow: 0px 0px 10px #bfbfbf;">
@@ -113,24 +161,6 @@
 </body>
 <script>
     $(document).ready(function(){
-
-        $('.owl-carousel').owlCarousel({
-            loop:true,
-            margin:10,
-            nav:true,
-            responsive:{
-                0:{
-                    items:1
-                },
-                600:{
-                    items:3
-                },
-                1000:{
-                    items:5
-                }
-            }
-        })
-
         //for name
         $("#addNameLink").click(function(){
             $("#nameEditForm").show();
@@ -144,6 +174,10 @@
             $("#nameEditForm").hide();
             $("#nameDiv").show();
         });
+        $( "#nameEditSave" ).click(function() {
+            $( "#updateUserForm" ).submit();
+        });
+
         //for phone no
         $("#addPhoneNoLink").click(function(){
             $("#phoneNoEditForm").show();
@@ -157,9 +191,23 @@
             $("#phoneNoEditForm").hide();
             $("#phoneNoDiv").show();
         });
+        $( "#phoneNoEditSave" ).click(function() {
+            $( "#updateUserForm" ).submit();
+        });
+
         //for password
-        $("#changePasswordDiv").click(function(){
-            $("#changePasswordFormDiv").toggle();
+        $("#passwordEditLink").click(function(){
+            $("#passwordDiv").hide();
+            $("#changePasswordDiv").show();
+        });
+
+        $("#passwordEditCancel").click(function(){
+            $("#changePasswordDiv").hide();
+            $("#passwordDiv").show();
+        });
+
+        $( "#passwordEditSave" ).click(function() {
+            $( "#updatePasswordForm" ).submit();
         });
     });
 </script>
